@@ -190,7 +190,6 @@
                             <th class="py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('name')">
                                 <span id="thModelName">模型名稱</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
-                            <th class="py-4 px-6" id="thProvider">供應商</th>
                             <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
                                 <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
@@ -242,7 +241,6 @@
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
                 thModelName: "模型名稱",
-                thProvider: "供應商",
                 thInputPrice: "輸入單價",
                 thOutputPrice: "輸出單價",
                 thDetails: "模型說明",
@@ -263,7 +261,6 @@
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
                 thModelName: "Model Name",
-                thProvider: "Provider",
                 thInputPrice: "Input Price",
                 thOutputPrice: "Output Price",
                 thDetails: "Description",
@@ -439,7 +436,6 @@
             document.getElementById('featuredOnlyLabel').innerText = text.featuredOnlyLabel;
 
             document.getElementById('thModelName').innerText = text.thModelName;
-            document.getElementById('thProvider').innerText = text.thProvider;
             document.getElementById('thInputPrice').innerText = text.thInputPrice;
             document.getElementById('thOutputPrice').innerText = text.thOutputPrice;
             document.getElementById('thDetails').innerText = text.thDetails;
@@ -521,9 +517,6 @@
                     <tr class="hover:bg-slate-900/60 transition-colors group">
                         <td class="py-4 px-6 font-semibold text-white">
                             <a class="hover:text-sky-400" href="${modelUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(model.name)}</a>
-                        </td>
-                        <td class="py-4 px-6">
-                            <span class="px-2.5 py-1 text-xs rounded-md border font-medium ${getProviderBadge(model.provider)}">${escapeHtml(model.provider)}</span>
                         </td>
                         <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.inputUSD, activeUnit, currencyKey)}</td>
                         <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.outputUSD, activeUnit, currencyKey)}</td>
