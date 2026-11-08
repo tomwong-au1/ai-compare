@@ -249,17 +249,17 @@
                                 <span id="thModelName">模型名稱</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                                 <button type="button" class="column-resize-handle" data-resize-boundary="0" aria-label="調整模型名稱欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
-                            <th class="relative py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
-                                <span id="thModelLevel">模型級數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
-                                <button type="button" class="column-resize-handle" data-resize-boundary="1" aria-label="調整模型級數欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
-                            </th>
                             <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
                                 <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
-                                <button type="button" class="column-resize-handle" data-resize-boundary="2" aria-label="調整輸入單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="1" aria-label="調整輸入單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
                             <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('output')">
                                 <span id="thOutputPrice">輸出單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
-                                <button type="button" class="column-resize-handle" data-resize-boundary="3" aria-label="調整輸出單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="2" aria-label="調整輸出單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                            </th>
+                            <th class="relative py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
+                                <span id="thModelLevel">模型級數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="3" aria-label="調整模型級數欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
                             <th class="py-4 px-6" id="thDetails">說明</th>
                         </tr>
@@ -308,7 +308,7 @@
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
-                columnResizeLabels: ["調整模型名稱欄闊度", "調整模型級數欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度"],
+                columnResizeLabels: ["調整模型名稱欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度", "調整模型級數欄闊度"],
                 thModelName: "模型名稱",
                 thModelLevel: "模型級數",
                 thInputPrice: "輸入單價",
@@ -331,7 +331,7 @@
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
-                columnResizeLabels: ["Resize Model Name column", "Resize Model Level column", "Resize Input Price column", "Resize Output Price column"],
+                columnResizeLabels: ["Resize Model Name column", "Resize Input Price column", "Resize Output Price column", "Resize Model Level column"],
                 thModelName: "Model Name",
                 thModelLevel: "Model Level",
                 thInputPrice: "Input Price",
@@ -689,11 +689,11 @@
                         <td class="py-4 px-6 font-semibold text-white">
                             <a class="hover:text-sky-400" href="${modelUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(model.name)}</a>
                         </td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.inputUSD, activeUnit, currencyKey)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.outputUSD, activeUnit, currencyKey)}</td>
                         <td class="py-4 px-6">
                             <span class="model-level-badge inline-flex whitespace-nowrap rounded-md border px-2.5 py-1 text-xs font-medium ${level.badge}">${currentLang === 'zh' ? level.zh : level.en}</span>
                         </td>
-                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.inputUSD, activeUnit, currencyKey)}</td>
-                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.outputUSD, activeUnit, currencyKey)}</td>
                         <td class="py-4 px-6 text-xs text-slate-400 max-w-xl leading-normal">${escapeHtml(description)}</td>
                     </tr>
                 `;
