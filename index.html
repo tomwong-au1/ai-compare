@@ -38,6 +38,55 @@
             background-color: #0b0f17;
             color: #f1f5f9;
         }
+        body[data-theme="white"] {
+            background-color: #f8fafc;
+            color: #0f172a;
+            color-scheme: light;
+        }
+        body[data-theme="white"] header {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-color: #cbd5e1;
+        }
+        body[data-theme="white"] .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            border-color: #cbd5e1;
+        }
+        body[data-theme="white"] h1 {
+            background-image: linear-gradient(to right, #0f172a, #334155, #0284c7) !important;
+        }
+        body[data-theme="white"] .text-white { color: #0f172a !important; }
+        body[data-theme="white"] .text-slate-200 { color: #1e293b !important; }
+        body[data-theme="white"] .text-slate-300 { color: #334155 !important; }
+        body[data-theme="white"] .text-slate-400 { color: #475569 !important; }
+        body[data-theme="white"] .text-slate-500 { color: #64748b !important; }
+        body[data-theme="white"] .text-slate-600 { color: #64748b !important; }
+        body[data-theme="white"] .bg-slate-950\/60,
+        body[data-theme="white"] .bg-slate-950\/70,
+        body[data-theme="white"] .bg-slate-900\/90,
+        body[data-theme="white"] .bg-slate-900,
+        body[data-theme="white"] .bg-slate-800 {
+            background-color: #f1f5f9 !important;
+        }
+        body[data-theme="white"] .border-slate-800,
+        body[data-theme="white"] .border-slate-800\/80 {
+            border-color: #cbd5e1 !important;
+        }
+        body[data-theme="white"] .divide-slate-800\/60 > :not(:last-child) {
+            border-color: #e2e8f0 !important;
+        }
+        body[data-theme="white"] .hover\:bg-slate-900\/60:hover,
+        body[data-theme="white"] .hover\:bg-slate-800:hover {
+            background-color: #e2e8f0 !important;
+        }
+        body[data-theme="white"] input {
+            color: #0f172a !important;
+        }
+        body[data-theme="white"] ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        body[data-theme="white"] ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
         .glass-card {
             background: rgba(19, 27, 46, 0.7);
             backdrop-filter: blur(12px);
@@ -63,7 +112,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen pb-12 antialiased selection:bg-sky-500 selection:text-white">
+<body class="min-h-screen pb-12 antialiased selection:bg-sky-500 selection:text-white" data-theme="black">
 
     <!-- Top Header -->
     <header class="border-b border-slate-800/80 bg-slate-950/60 sticky top-0 z-50 backdrop-blur-md">
@@ -82,6 +131,11 @@
 
             <!-- Currency & Unit Selector Controls -->
             <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-lg p-1" role="group" aria-label="背景顏色">
+                    <button id="themeWhite" onclick="setTheme('white')" aria-pressed="false" class="px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all">白色</button>
+                    <button id="themeBlack" onclick="setTheme('black')" aria-pressed="true" class="px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all">黑色</button>
+                </div>
+
                 <!-- Language Selector -->
                 <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-lg p-1">
                     <i class="fa-solid fa-globe text-xs text-slate-400 pl-2"></i>
@@ -188,6 +242,8 @@
                 title: "AI 模型 API 價格目錄",
                 subtitle: "OpenRouter 即時模型目錄及價格",
                 currencyLbl: "貨幣:",
+                themeWhite: "白色",
+                themeBlack: "黑色",
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
@@ -207,6 +263,8 @@
                 title: "AI Model API Pricing Directory",
                 subtitle: "Live model catalog and pricing from OpenRouter",
                 currencyLbl: "Currency:",
+                themeWhite: "White",
+                themeBlack: "Black",
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
@@ -235,7 +293,8 @@
             "anthropic/claude-sonnet-5.5",
             "anthropic/claude-haiku-5.5",
             "deepseek/deepseek-v4.1-flash",
-            "moonshotai/kimi-k3.1-pro"
+            "moonshotai/kimi-k3.1-pro",
+            "google/gemini-4-argon"
         ]);
 
         const MODEL_DESCRIPTIONS_ZH = {
@@ -246,7 +305,8 @@
             "anthropic/claude-sonnet-5.5": "Sonnet 系列的日常工作型號，適合範圍明確的任務；特別擅長開發功能、修正錯誤及產出完整內容。",
             "anthropic/claude-haiku-5.5": "輕巧快速的型號，適合大量且注重成本的摘要、子代理及瀏覽器操作工作；程式開發與電腦操作能力亦有所提升。",
             "deepseek/deepseek-v4.1-flash": "DeepSeek 的稀疏混合專家模型，採用因果編碼器—解碼器（CED）架構。輸入時啟用 80 億參數，生成輸出時啟用 160 億參數。",
-            "moonshotai/kimi-k3.1-pro": "Moonshot AI 旗艦開放權重多模態推理模型，是 Kimi K3 的後訓練升級版，支援 100 萬 tokens 上下文，適合長流程程式開發等任務。"
+            "moonshotai/kimi-k3.1-pro": "Moonshot AI 旗艦開放權重多模態推理模型，是 Kimi K3 的後訓練升級版，支援 100 萬 tokens 上下文，適合長流程程式開發等任務。",
+            "google/gemini-4-argon": "Google 旗艦推理模型，適合複雜軟件工程、數學與科學問題，以及自主多步驟代理任務。"
         };
 
         // Model Pricing Database (Base USD)
@@ -376,6 +436,8 @@
 
             // Update UI elements
             document.getElementById('lblCurrency').innerText = text.currencyLbl;
+            document.getElementById('themeWhite').innerText = text.themeWhite;
+            document.getElementById('themeBlack').innerText = text.themeBlack;
             document.getElementById('siteSubtitle').innerText = text.subtitle;
 
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
@@ -398,6 +460,22 @@
             document.getElementById('unit1K').innerText = text.unit1K;
 
             updateDisplay();
+        }
+
+        function setTheme(theme) {
+            const isWhite = theme === 'white';
+            document.body.dataset.theme = isWhite ? 'white' : 'black';
+
+            const whiteButton = document.getElementById('themeWhite');
+            const blackButton = document.getElementById('themeBlack');
+            whiteButton.setAttribute('aria-pressed', String(isWhite));
+            blackButton.setAttribute('aria-pressed', String(!isWhite));
+            whiteButton.className = isWhite
+                ? "px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all"
+                : "px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all";
+            blackButton.className = isWhite
+                ? "px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all"
+                : "px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all";
         }
 
         // Provider Badge Generator

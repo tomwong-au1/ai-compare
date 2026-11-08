@@ -15,6 +15,8 @@
   - DeepSeek V4.1 Flash
   - MoonshotAI Kimi K3.1 Pro
 - 為以上 8 款預設模型加入繁體中文說明；英文介面顯示 OpenRouter 原文。
+- 加入 Gemini 4 Argon 至預設指定模型清單，並為模型提供繁體中文說明；價格由 OpenRouter API 即時載入。
+- 加入白色／黑色背景切換按鈕，按鈕文字會配合中英文介面更新。
 - 從價格表移除「模型 ID」欄，但保留按模型 ID 搜尋。
 - 移除頁面頂部嘅最低輸入／輸出價格、平均價及模型數量統計卡片。
 - `index.html` 同 `ai_compare.html` 保持同步。
