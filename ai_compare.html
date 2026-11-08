@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model API Pricing Directory (2026 Edition)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f17',
+                        cardBg: '#131b2e',
+                        borderBg: '#1e293b',
+                        neonBlue: '#38bdf8',
+                        neonPurple: '#a855f7',
+                        neonEmerald: '#34d399',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f17;
+            color: #f1f5f9;
+        }
+        .glass-card {
+            background: rgba(19, 27, 46, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.15);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Top Header -->
+    <header class="border-b border-slate-800/80 bg-slate-950/60 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-microchip text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-sky-400 bg-clip-text text-transparent">
+                        AI Model API Pricing Index
+                    </h1>
+                    <p class="text-xs text-slate-400">Live API Token Rates & Interactive Cost Estimator</p>
+                </div>
+            </div>
+
+            <!-- Currency & Unit Selector Controls -->
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Language Selector -->
+                <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-lg p-1">
+                    <i class="fa-solid fa-globe text-xs text-slate-400 pl-2"></i>
+                    <select id="langSelect" onchange="setLanguage(this.value)" class="bg-slate-800 text-xs text-slate-200 font-semibold rounded px-2 py-1 outline-none border-none focus:ring-1 focus:ring-sky-500 cursor-pointer ml-1">
+                        <option value="zh" selected>繁體中文</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <!-- Currency Selector -->
+                <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-lg p-1">
+                    <span class="text-xs text-slate-400 px-2 font-medium" id="lblCurrency">貨幣:</span>
+                    <select id="currencySelect" onchange="updateDisplay()" class="bg-slate-800 text-xs text-slate-200 font-semibold rounded px-2 py-1 outline-none border-none focus:ring-1 focus:ring-sky-500 cursor-pointer">
+                        <option value="AUD" selected>AUD (A$)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="HKD">HKD (HK$)</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-lg p-1">
+                    <button id="unit1M" onclick="setUnit('1M')" class="px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all">Per 1M Tokens</button>
+                    <button id="unit1K" onclick="setUnit('1K')" class="px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all">Per 1K Tokens</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
+
+        <!-- Stats Quick View Grid -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestIn">最低輸入單價</p>
+                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestInput">A$0.15</h3>
+                    <p class="text-xs text-slate-400 mt-1">GPT 6.1 Luna</p>
+                </div>
+                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+                    <i class="fa-solid fa-arrow-down-short-wide text-xl"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestOut">最低輸出單價</p>
+                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestOutput">A$0.76</h3>
+                    <p class="text-xs text-slate-400 mt-1">GPT 6.1 Luna</p>
+                </div>
+                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+                    <i class="fa-solid fa-bolt text-xl"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleFlagshipAvg">旗艦模型均價 (1M)</p>
+                    <h3 class="text-2xl font-extrabold text-sky-400 mt-1" id="statFlagshipAvg">A$4.05 / A$20.27</h3>
+                    <p class="text-xs text-slate-400 mt-1" id="statSubFlagshipAvg">輸入 / 輸出 平均</p>
+                </div>
+                <div class="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
+                    <i class="fa-solid fa-crown text-xl"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleTotalModels">已收錄 AI 模型</p>
+                    <h3 class="text-2xl font-extrabold text-purple-400 mt-1" id="statTotalModelsValue">8 款模型</h3>
+                    <p class="text-xs text-slate-400 mt-1" id="statSubTotalModels">4 家主流 AI 供應商</p>
+                </div>
+                <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Cost Calculator Section -->
+        <section class="glass-card rounded-2xl p-6 border border-slate-800">
+            <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-sky-400 text-lg"></i>
+                    <h2 class="text-lg font-bold text-white" id="calcHeaderTitle">即時 API 費用估算器</h2>
+                </div>
+                <span class="text-xs text-slate-400" id="calcHeaderSubtitle">根據您的預估使用量計算各模型總費用</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2" id="lblInputTokens">輸入 Token 數量 (Prompt)</label>
+                    <div class="relative">
+                        <input type="number" id="calcInputTokens" value="1000000" step="100000" oninput="calculateEstimates()"
+                            class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500 transition-all pl-9">
+                        <i class="fa-solid fa-arrow-right-to-bracket absolute left-3 top-3.5 text-slate-500 text-xs"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mt-1 block" id="hintInputTokens">例如：1,000,000 tokens ≈ 約 750,000 個英文字詞</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2" id="lblOutputTokens">輸出 Token 數量 (Completion)</label>
+                    <div class="relative">
+                        <input type="number" id="calcOutputTokens" value="500000" step="50000" oninput="calculateEstimates()"
+                            class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500 transition-all pl-9">
+                        <i class="fa-solid fa-arrow-right-from-bracket absolute left-3 top-3.5 text-slate-500 text-xs"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mt-1 block" id="hintOutputTokens">例如：500,000 tokens 預計生成長度</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2" id="lblBestModel">最具成本效益方案</label>
+                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+                        <span class="text-xs text-slate-400" id="lblLowestEstimated">估算最低費用：</span>
+                        <span id="bestCostModel" class="text-sm font-bold text-emerald-400">--</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search, Filter & Table Container -->
+        <section class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+            <!-- Toolbar -->
+            <div class="p-4 sm:p-6 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- Search Box -->
+                <div class="relative flex-1 max-w-md">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
+                    <input type="text" id="searchInput" onkeyup="filterModels()" placeholder="搜尋模型名稱、分級或特點..."
+                        class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all">
+                </div>
+
+                <!-- Provider Filter Tabs -->
+                <div class="flex flex-wrap items-center gap-1.5" id="providerFilters">
+                    <button onclick="filterProvider('All')" class="provider-btn active text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-all" id="btnFilterAll">全部廠商</button>
+                    <button onclick="filterProvider('DeepSeek')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">DeepSeek</button>
+                    <button onclick="filterProvider('OpenAI')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">OpenAI</button>
+                    <button onclick="filterProvider('Anthropic')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">Anthropic</button>
+                    <button onclick="filterProvider('Moonshot')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">Moonshot / Kimi</button>
+                    <button onclick="filterProvider('Google')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">Google</button>
+                </div>
+            </div>
+
+            <!-- Pricing Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                            <th class="py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('name')">
+                                <span id="thModelName">模型名稱</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                            </th>
+                            <th class="py-4 px-6" id="thProvider">供應商</th>
+                            <th class="py-4 px-6" id="thTier">定位層級</th>
+                            <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
+                                <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                            </th>
+                            <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('output')">
+                                <span id="thOutputPrice">輸出單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                            </th>
+                            <th class="py-4 px-6 text-right" id="thEstCost">預估批次總花費</th>
+                            <th class="py-4 px-6" id="thNotes">特點 / 備註</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modelTableBody" class="divide-y divide-slate-800/60 text-sm font-medium">
+                        <!-- Rendered via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="noResults" class="hidden p-12 text-center text-slate-500">
+                <i class="fa-solid fa-ghost text-4xl mb-3 text-slate-600"></i>
+                <p class="text-base font-semibold" id="noResultsTitle">未找到符合條件的 AI 模型</p>
+                <p class="text-xs text-slate-600 mt-1" id="noResultsDesc">請嘗試搜尋其他關鍵字或重設供應商篩選器。</p>
+            </div>
+        </section>
+
+        <!-- Model Tier Information Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card rounded-2xl p-6 border border-slate-800">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                    <h3 class="font-bold text-slate-200" id="tier1Title">極速輕量層級 (Ultra-Light)</h3>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed" id="tier1Desc">
+                    專為超低延遲需求、簡單文本分類、即時 Agent 對話與高吞吐背景任務設計 (如 DeepSeek V4.1, GPT 6.1 Luna, Gemini 4 Argon)。
+                </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 border border-slate-800">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-3 h-3 rounded-full bg-sky-400"></span>
+                    <h3 class="font-bold text-slate-200" id="tier2Title">均衡視覺層級 (Balanced)</h3>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed" id="tier2Desc">
+                    最佳成本與推理效能平衡，具備強大多模態視覺與螢幕辨識能力 (如 GPT 6.1 Terra, Claude Sonnet 5.5)。
+                </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 border border-slate-800">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-3 h-3 rounded-full bg-purple-400"></span>
+                    <h3 class="font-bold text-slate-200" id="tier3Title">旗艦高階推理層級 (Flagship)</h3>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed" id="tier3Desc">
+                    具備最高智商與極強長文本理解，適合複雜程式編寫、高階數學推理與深度分析 (如 GPT 6.1 SOL, Opus 5.5, Kimi 3.1 Pro)。
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 text-center text-xs text-slate-500">
+        <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p id="footerCopy">© 2026 AI Price Index Directory. 價格為官方標準 API 收費（1 USD ≈ 1.52 AUD, 7.80 HKD）。</p>
+            <div class="flex items-center space-x-4">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400"></i> <span id="footerStatus1">標準 API 費率</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-sky-400"></i> <span id="footerStatus2">更新於 2026年11月</span></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Language i18n Dictionary
+        const i18n = {
+            zh: {
+                title: "AI 模型 API 價格目錄",
+                subtitle: "即時 API Token 費率與互動式成本估算器",
+                currencyLbl: "貨幣:",
+                statCheapestIn: "最低輸入單價",
+                statCheapestOut: "最低輸出單價",
+                statFlagshipAvg: "旗艦模型均價 (1M)",
+                statSubFlagshipAvg: "輸入 / 輸出 平均",
+                statTotalModels: "已收錄 AI 模型",
+                statSubTotalModels: "4 家主流 AI 供應商",
+                modelsCount: "8 款模型",
+                calcHeaderTitle: "即時 API 費用估算器",
+                calcHeaderSubtitle: "根據您的預估使用量計算各模型總費用",
+                lblInputTokens: "輸入 Token 數量 (Prompt)",
+                hintInputTokens: "例如：1,000,000 tokens ≈ 約 750,000 個英文字詞",
+                lblOutputTokens: "輸出 Token 數量 (Completion)",
+                hintOutputTokens: "例如：500,000 tokens 預計生成長度",
+                lblBestModel: "最具成本效益方案",
+                lblLowestEstimated: "估算最低費用：",
+                searchPlaceholder: "搜尋模型名稱、分級或特點...",
+                btnAllProviders: "全部廠商",
+                thModelName: "模型名稱",
+                thProvider: "供應商",
+                thTier: "定位層級",
+                thInputPrice: "輸入單價",
+                thOutputPrice: "輸出單價",
+                thEstCost: "預估批次總花費",
+                thNotes: "特點 / 備註",
+                noResultsTitle: "未找到符合條件的 AI 模型",
+                noResultsDesc: "請嘗試搜尋其他關鍵字或重設供應商篩選器。",
+                tier1Title: "極速輕量層級 (Ultra-Light)",
+                tier1Desc: "專為超低延遲需求、簡單文本分類、即時 Agent 對話與高吞吐背景任務設計 (如 DeepSeek V4.1, GPT 6.1 Luna, Gemini 4 Argon)。",
+                tier2Title: "均衡視覺層級 (Balanced)",
+                tier2Desc: "最佳成本與推理效能平衡，具備強大多模態視覺與螢幕辨識能力 (如 GPT 6.1 Terra, Claude Sonnet 5.5)。",
+                tier3Title: "旗艦高階推理層級 (Flagship)",
+                tier3Desc: "具備最高智商與極強長文本理解，適合複雜程式編寫、高階數學推理與深度分析 (如 GPT 6.1 SOL, Opus 5.5, Kimi 3.1 Pro)。",
+                footerCopy: "© 2026 AI Price Index Directory. 價格為官方標準 API 收費（1 USD ≈ 1.52 AUD, 7.80 HKD）。",
+                footerStatus1: "標準 API 費率",
+                footerStatus2: "更新於 2026年11月",
+                unit1M: "每 1M Tokens",
+                unit1K: "每 1K Tokens",
+                tierUltraLight: "超輕量",
+                tierBalanced: "均衡型",
+                tierFlagship: "旗艦型"
+            },
+            en: {
+                title: "AI Model API Pricing Directory",
+                subtitle: "Live API Token Rates & Interactive Cost Estimator",
+                currencyLbl: "Currency:",
+                statCheapestIn: "Cheapest Input Rate",
+                statCheapestOut: "Cheapest Output Rate",
+                statFlagshipAvg: "Flagship Average (1M)",
+                statSubFlagshipAvg: "In / Out Average",
+                statTotalModels: "Tracked AI Models",
+                statSubTotalModels: "4 Premier AI Providers",
+                modelsCount: "8 Models",
+                calcHeaderTitle: "Live API Request Cost Estimator",
+                calcHeaderSubtitle: "Estimate your expense based on volume",
+                lblInputTokens: "Input (Prompt) Tokens",
+                hintInputTokens: "e.g., 1,000,000 tokens ≈ ~750,000 words",
+                lblOutputTokens: "Output (Completion) Tokens",
+                hintOutputTokens: "e.g., 500,000 tokens generated output",
+                lblBestModel: "Best Value Option",
+                lblLowestEstimated: "Lowest Estimated Cost:",
+                searchPlaceholder: "Search model name, tier or specs...",
+                btnAllProviders: "All Providers",
+                thModelName: "Model Name",
+                thProvider: "Provider",
+                thTier: "Tier Category",
+                thInputPrice: "Input Price",
+                thOutputPrice: "Output Price",
+                thEstCost: "Est. Batch Cost",
+                thNotes: "Features / Notes",
+                noResultsTitle: "No AI models matched your search",
+                noResultsDesc: "Try searching for a different name or resetting your provider filter.",
+                tier1Title: "Ultra-Light & Speed Tier",
+                tier1Desc: "Designed for ultra-low latency requirements, simple classification, and high-throughput background tasks (e.g., DeepSeek V4.1, GPT 6.1 Luna, Gemini 4 Argon).",
+                tier2Title: "Balanced & Vision Tier",
+                tier2Desc: "Ideal balance between cost and high reasoning performance with visual analysis (e.g., GPT 6.1 Terra, Sonnet 5.5).",
+                tier3Title: "Flagship & Reasoning Tier",
+                tier3Desc: "Maximum intelligence for autonomous coding, complex math reasoning, and long context window retrieval (e.g., GPT 6.1 SOL, Opus 5.5, Kimi 3.1 Pro).",
+                footerCopy: "© 2026 AI Price Index Directory. Standard developer API rates (1 USD ≈ 1.52 AUD, 7.80 HKD).",
+                footerStatus1: "Standard API Rates",
+                footerStatus2: "Updated Nov 2026",
+                unit1M: "Per 1M Tokens",
+                unit1K: "Per 1K Tokens",
+                tierUltraLight: "Ultra-Light",
+                tierBalanced: "Balanced",
+                tierFlagship: "Flagship"
+            }
+        };
+
+        // Current Language Choice (Default Traditional Chinese 'zh')
+        let currentLang = 'zh';
+
+        // Model Pricing Database (Base USD)
+        const models = [
+            {
+                name: "DeepSeek V4.1",
+                provider: "DeepSeek",
+                tierKey: "tierUltraLight",
+                tierBadge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                inputUSD: 0.15,
+                outputUSD: 0.60,
+                notes: {
+                    zh: "性價比極高；離峰時段 $0.15/$0.60，尖峰時段 $0.30/$1.20。",
+                    en: "High cost-efficiency; off-peak $0.15/$0.60, peak $0.30/$1.20."
+                },
+                icon: "fa-solid fa-bolt"
+            },
+            {
+                name: "GPT 6.1 Luna",
+                provider: "OpenAI",
+                tierKey: "tierUltraLight",
+                tierBadge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                inputUSD: 0.10,
+                outputUSD: 0.50,
+                notes: {
+                    zh: "極輕量速回應模型，適合微型任務與高頻調用。",
+                    en: "Ultra-lightweight fast response model for micro-tasks."
+                },
+                icon: "fa-solid fa-feather"
+            },
+            {
+                name: "GPT 6.1 Terra",
+                provider: "OpenAI",
+                tierKey: "tierBalanced",
+                tierBadge: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+                inputUSD: 1.00,
+                outputUSD: 5.00,
+                notes: {
+                    zh: "主打視覺、螢幕辨識與高效率任務，價格為 SOL 的一半。",
+                    en: "Optimized for vision, screen parsing, and high-efficiency workflows."
+                },
+                icon: "fa-solid fa-eye"
+            },
+            {
+                name: "GPT 6.1 SOL",
+                provider: "OpenAI",
+                tierKey: "tierFlagship",
+                tierBadge: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+                inputUSD: 2.00,
+                outputUSD: 10.00,
+                notes: {
+                    zh: "OpenAI 旗艦級模型，擅長複雜程式與高階邏輯推理。",
+                    en: "OpenAI premier flagship model for complex math & advanced coding."
+                },
+                icon: "fa-solid fa-brain"
+            },
+            {
+                name: "Claude Opus 5.5",
+                provider: "Anthropic",
+                tierKey: "tierFlagship",
+                tierBadge: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+                inputUSD: 4.00,
+                outputUSD: 20.00,
+                notes: {
+                    zh: "Anthropic 最頂級高階推理與長文分析對話模型。",
+                    en: "Anthropic top-tier high-reasoning & deep research engine."
+                },
+                icon: "fa-solid fa-gem"
+            },
+            {
+                name: "Claude Sonnet 5.5",
+                provider: "Anthropic",
+                tierKey: "tierBalanced",
+                tierBadge: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+                inputUSD: 2.00,
+                outputUSD: 10.00,
+                notes: {
+                    zh: "Anthropic 主力高效模型，價格為 Opus 5.5 的一半。",
+                    en: "Anthropic core enterprise model; 50% price of Opus 5.5."
+                },
+                icon: "fa-solid fa-sliders"
+            },
+            {
+                name: "Kimi 3.1 Pro",
+                provider: "Moonshot",
+                tierKey: "tierFlagship",
+                tierBadge: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+                inputUSD: 2.00,
+                outputUSD: 10.00,
+                notes: {
+                    zh: "月之暗面旗艦長文本模型 (Highspeed 模式為 $4/$20)。",
+                    en: "Moonshot AI flagship long-context model (Highspeed mode $4/$20)."
+                },
+                icon: "fa-solid fa-rocket"
+            },
+            {
+                name: "Gemini 4 Argon",
+                provider: "Google",
+                tierKey: "tierUltraLight",
+                tierBadge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                inputUSD: 0.15,
+                outputUSD: 0.60,
+                notes: {
+                    zh: "Google 最新架構輕量高速模型（價格與競品一致）。",
+                    en: "Google next-gen low latency architecture for scale operations."
+                },
+                icon: "fa-solid fa-atom"
+            }
+        ];
+
+        // Currency Exchange Rates (Base USD)
+        const exchangeRates = {
+            AUD: { symbol: "A$", rate: 1.52 },
+            USD: { symbol: "$", rate: 1.00 },
+            HKD: { symbol: "HK$", rate: 7.80 }
+        };
+
+        // State Variables
+        let activeUnit = "1M"; // '1M' or '1K'
+        let selectedProvider = "All";
+        let sortDirection = { name: 'asc', input: 'asc', output: 'asc' };
+
+        // Language Switcher Function
+        function setLanguage(lang) {
+            currentLang = lang;
+            const text = i18n[lang];
+
+            // Update UI elements
+            document.getElementById('lblCurrency').innerText = text.currencyLbl;
+            document.getElementById('statTitleCheapestIn').innerText = text.statCheapestIn;
+            document.getElementById('statTitleCheapestOut').innerText = text.statCheapestOut;
+            document.getElementById('statTitleFlagshipAvg').innerText = text.statFlagshipAvg;
+            document.getElementById('statSubFlagshipAvg').innerText = text.statSubFlagshipAvg;
+            document.getElementById('statTitleTotalModels').innerText = text.statTotalModels;
+            document.getElementById('statSubTotalModels').innerText = text.statSubTotalModels;
+            document.getElementById('statTotalModelsValue').innerText = text.modelsCount;
+
+            document.getElementById('calcHeaderTitle').innerText = text.calcHeaderTitle;
+            document.getElementById('calcHeaderSubtitle').innerText = text.calcHeaderSubtitle;
+            document.getElementById('lblInputTokens').innerText = text.lblInputTokens;
+            document.getElementById('hintInputTokens').innerText = text.hintInputTokens;
+            document.getElementById('lblOutputTokens').innerText = text.lblOutputTokens;
+            document.getElementById('hintOutputTokens').innerText = text.hintOutputTokens;
+            document.getElementById('lblBestModel').innerText = text.lblBestModel;
+            document.getElementById('lblLowestEstimated').innerText = text.lblLowestEstimated;
+
+            document.getElementById('searchInput').placeholder = text.searchPlaceholder;
+            document.getElementById('btnFilterAll').innerText = text.btnAllProviders;
+
+            document.getElementById('thModelName').innerText = text.thModelName;
+            document.getElementById('thProvider').innerText = text.thProvider;
+            document.getElementById('thTier').innerText = text.thTier;
+            document.getElementById('thInputPrice').innerText = text.thInputPrice;
+            document.getElementById('thOutputPrice').innerText = text.thOutputPrice;
+            document.getElementById('thEstCost').innerText = text.thEstCost;
+            document.getElementById('thNotes').innerText = text.thNotes;
+
+            document.getElementById('noResultsTitle').innerText = text.noResultsTitle;
+            document.getElementById('noResultsDesc').innerText = text.noResultsDesc;
+
+            document.getElementById('tier1Title').innerText = text.tier1Title;
+            document.getElementById('tier1Desc').innerText = text.tier1Desc;
+            document.getElementById('tier2Title').innerText = text.tier2Title;
+            document.getElementById('tier2Desc').innerText = text.tier2Desc;
+            document.getElementById('tier3Title').innerText = text.tier3Title;
+            document.getElementById('tier3Desc').innerText = text.tier3Desc;
+
+            document.getElementById('footerCopy').innerText = text.footerCopy;
+            document.getElementById('footerStatus1').innerText = text.footerStatus1;
+            document.getElementById('footerStatus2').innerText = text.footerStatus2;
+
+            document.getElementById('unit1M').innerText = text.unit1M;
+            document.getElementById('unit1K').innerText = text.unit1K;
+
+            updateDisplay();
+        }
+
+        // Provider Badge Generator
+        function getProviderBadge(provider) {
+            switch(provider) {
+                case 'OpenAI': return 'bg-emerald-950/60 text-emerald-400 border-emerald-800/50';
+                case 'Anthropic': return 'bg-amber-950/60 text-amber-400 border-amber-800/50';
+                case 'DeepSeek': return 'bg-blue-950/60 text-blue-400 border-blue-800/50';
+                case 'Moonshot': return 'bg-indigo-950/60 text-indigo-400 border-indigo-800/50';
+                case 'Google': return 'bg-red-950/60 text-red-400 border-red-800/50';
+                default: return 'bg-slate-800 text-slate-300';
+            }
+        }
+
+        // Format Currency Function
+        function formatPrice(valInUSD, unit, currencyKey) {
+            const curr = exchangeRates[currencyKey] || exchangeRates.AUD;
+            let price = valInUSD * curr.rate;
+            
+            if (unit === '1K') {
+                price = price / 1000;
+                return `${curr.symbol}${price < 0.01 ? price.toFixed(5) : price.toFixed(4)}`;
+            }
+            
+            return `${curr.symbol}${price.toFixed(2)}`;
+        }
+
+        // Render Model Table
+        function renderTable(data = models) {
+            const tableBody = document.getElementById("modelTableBody");
+            const currencyKey = document.getElementById("currencySelect").value;
+            const noResults = document.getElementById("noResults");
+            const text = i18n[currentLang];
+
+            if (data.length === 0) {
+                tableBody.innerHTML = "";
+                noResults.classList.remove("hidden");
+                return;
+            } else {
+                noResults.classList.add("hidden");
+            }
+
+            const inputTokens = parseFloat(document.getElementById("calcInputTokens").value) || 0;
+            const outputTokens = parseFloat(document.getElementById("calcOutputTokens").value) || 0;
+
+            // Update stats cards dynamically based on selected currency
+            const curr = exchangeRates[currencyKey];
+            document.getElementById('statCheapestInput').innerText = `${curr.symbol}${(0.10 * curr.rate).toFixed(2)}`;
+            document.getElementById('statCheapestOutput').innerText = `${curr.symbol}${(0.50 * curr.rate).toFixed(2)}`;
+            
+            // Flagship models average (SOL, Opus 5.5, Kimi 3.1 Pro -> Avg input $2.66, Avg output $13.33)
+            const flagshipAvgIn = (2.666 * curr.rate).toFixed(2);
+            const flagshipAvgOut = (13.333 * curr.rate).toFixed(2);
+            document.getElementById('statFlagshipAvg').innerText = `${curr.symbol}${flagshipAvgIn} / ${curr.symbol}${flagshipAvgOut}`;
+
+            tableBody.innerHTML = data.map(model => {
+                const inFormatted = formatPrice(model.inputUSD, activeUnit, currencyKey);
+                const outFormatted = formatPrice(model.outputUSD, activeUnit, currencyKey);
+
+                // Calculate Batch Estimation for input values
+                const batchCostUSD = ((inputTokens / 1000000) * model.inputUSD) + ((outputTokens / 1000000) * model.outputUSD);
+                const batchCostFormatted = `${curr.symbol}${(batchCostUSD * curr.rate).toFixed(3)}`;
+
+                return `
+                    <tr class="hover:bg-slate-900/60 transition-colors group">
+                        <td class="py-4 px-6 font-semibold text-white flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-sky-400 group-hover:bg-slate-700 transition-all">
+                                <i class="${model.icon}"></i>
+                            </div>
+                            <span>${model.name}</span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-1 text-xs rounded-md border font-medium ${getProviderBadge(model.provider)}">
+                                ${model.provider}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-1 text-xs rounded-md border font-medium ${model.tierBadge}">
+                                ${text[model.tierKey]}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">
+                            ${inFormatted}
+                        </td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">
+                            ${outFormatted}
+                        </td>
+                        <td class="py-4 px-6 text-right font-mono text-sky-400 font-semibold">
+                            ${batchCostFormatted}
+                        </td>
+                        <td class="py-4 px-6 text-xs text-slate-400 max-w-xs leading-normal">
+                            ${model.notes[currentLang]}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Filter Logic
+        function filterModels() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filtered = models.filter(m => {
+                const notesText = m.notes[currentLang] || "";
+                const matchesSearch = m.name.toLowerCase().includes(query) || 
+                                     m.provider.toLowerCase().includes(query) || 
+                                     notesText.toLowerCase().includes(query);
+                const matchesProvider = selectedProvider === "All" || m.provider.toLowerCase() === selectedProvider.toLowerCase();
+                return matchesSearch && matchesProvider;
+            });
+            renderTable(filtered);
+            calculateEstimates();
+        }
+
+        // Provider Filter Button Handler
+        function filterProvider(provider) {
+            selectedProvider = provider;
+            const buttons = document.querySelectorAll('.provider-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(provider) || (provider === 'All' && btn.innerText.includes(i18n[currentLang].btnAllProviders))) {
+                    btn.className = "provider-btn active text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-all";
+                } else {
+                    btn.className = "provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all";
+                }
+            });
+            filterModels();
+        }
+
+        // Unit Toggle (1M vs 1K)
+        function setUnit(unit) {
+            activeUnit = unit;
+            const btn1M = document.getElementById('unit1M');
+            const btn1K = document.getElementById('unit1K');
+            
+            if (unit === '1M') {
+                btn1M.className = "px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all";
+                btn1K.className = "px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all";
+            } else {
+                btn1K.className = "px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all";
+                btn1M.className = "px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all";
+            }
+            updateDisplay();
+        }
+
+        // Column Sort
+        function sortTable(key) {
+            let dir = sortDirection[key] === 'asc' ? 'desc' : 'asc';
+            sortDirection[key] = dir;
+
+            models.sort((a, b) => {
+                let valA = key === 'input' ? a.inputUSD : key === 'output' ? a.outputUSD : a.name;
+                let valB = key === 'input' ? b.inputUSD : key === 'output' ? b.outputUSD : b.name;
+
+                if (valA < valB) return dir === 'asc' ? -1 : 1;
+                if (valA > valB) return dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+            filterModels();
+        }
+
+        // Calculate Best Estimate
+        function calculateEstimates() {
+            const inputTokens = parseFloat(document.getElementById("calcInputTokens").value) || 0;
+            const outputTokens = parseFloat(document.getElementById("calcOutputTokens").value) || 0;
+            const currencyKey = document.getElementById("currencySelect").value;
+            const curr = exchangeRates[currencyKey] || exchangeRates.AUD;
+
+            let bestCost = Infinity;
+            let bestModelName = "";
+
+            models.forEach(m => {
+                const totalCostUSD = ((inputTokens / 1000000) * m.inputUSD) + ((outputTokens / 1000000) * m.outputUSD);
+                if (totalCostUSD < bestCost) {
+                    bestCost = totalCostUSD;
+                    bestModelName = m.name;
+                }
+            });
+
+            const bestCostDisplay = `${curr.symbol}${(bestCost * curr.rate).toFixed(3)}`;
+            document.getElementById("bestCostModel").innerText = `${bestCostDisplay} (${bestModelName})`;
+            renderTable();
+        }
+
+        // Global Display Refresh
+        function updateDisplay() {
+            renderTable();
+            calculateEstimates();
+        }
+
+        // Initial Load setup
+        window.onload = function() {
+            setLanguage('zh');
+        };
+    </script>
+</body>
+</html>
