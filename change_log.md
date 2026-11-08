@@ -2,6 +2,10 @@
 
 記錄 AI Model API Pricing Directory 網站嘅建立、功能更新同介面調整。
 
+## 2026-11-09
+
+- 新增可排序嘅 Model Level 欄，按模型定位分為旗艦級、高階、中階、輕量級及一般級；未知型號使用名稱提示作粗略分類，並註明非效能測試排名。
+
 ## 2026-11-08
 
 - 建立公開 GitHub repository，將 `ai_compare.html` 上傳，並新增 `index.html` 作為網站入口；啟用 GitHub Pages。

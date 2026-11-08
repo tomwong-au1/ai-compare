@@ -87,6 +87,31 @@
         body[data-theme="white"] ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
         }
+        body[data-theme="white"] .model-level-flagship {
+            background: #faf5ff !important;
+            border-color: #d8b4fe !important;
+            color: #7e22ce !important;
+        }
+        body[data-theme="white"] .model-level-advanced {
+            background: #eff6ff !important;
+            border-color: #bfdbfe !important;
+            color: #1d4ed8 !important;
+        }
+        body[data-theme="white"] .model-level-intermediate {
+            background: #fffbeb !important;
+            border-color: #fde68a !important;
+            color: #b45309 !important;
+        }
+        body[data-theme="white"] .model-level-lightweight {
+            background: #ecfdf5 !important;
+            border-color: #a7f3d0 !important;
+            color: #047857 !important;
+        }
+        body[data-theme="white"] .model-level-general {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #475569 !important;
+        }
         .glass-card {
             background: rgba(19, 27, 46, 0.7);
             backdrop-filter: blur(12px);
@@ -196,6 +221,9 @@
                             <th class="py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('name')">
                                 <span id="thModelName">模型名稱</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
+                            <th class="py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
+                                <span id="thModelLevel">Model Level</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                            </th>
                             <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
                                 <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
@@ -210,6 +238,9 @@
                     </tbody>
                 </table>
             </div>
+            <p id="modelLevelNote" class="border-t border-slate-800 px-4 py-3 text-xs text-slate-500 sm:px-6">
+                Model Level 由高至低：旗艦級（最強定位）、高階、中階、輕量級（偏速度／成本）、一般級（資料不足）。分類按模型系列定位或名稱推定，並非效能測試排名。
+            </p>
 
             <!-- Empty State -->
             <div id="noResults" class="hidden p-12 text-center text-slate-500">
@@ -247,11 +278,13 @@
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
                 thModelName: "模型名稱",
+                thModelLevel: "Model Level",
                 thInputPrice: "輸入單價",
                 thOutputPrice: "輸出單價",
                 thDetails: "模型說明",
                 noResultsTitle: "未找到符合條件的 AI 模型",
                 noResultsDesc: "請嘗試其他搜尋字詞或供應商。",
+                modelLevelNote: "Model Level 由高至低：旗艦級（最強定位）、高階、中階、輕量級（偏速度／成本）、一般級（資料不足）。分類按模型系列定位或名稱推定，並非效能測試排名。",
                 footerCopy: "價格由 OpenRouter 公開 API 提供，並不代表模型供應商直接報價。",
                 footerStatus2: "OpenRouter 即時資料",
                 unit1M: "每 1M Tokens",
@@ -267,11 +300,13 @@
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
                 thModelName: "Model Name",
+                thModelLevel: "Model Level",
                 thInputPrice: "Input Price",
                 thOutputPrice: "Output Price",
                 thDetails: "Description",
                 noResultsTitle: "No AI models matched your search",
                 noResultsDesc: "Try a different search term or provider.",
+                modelLevelNote: "From highest to lowest: Flagship, Advanced, Mid-range, Lightweight (speed/cost-focused), and General (insufficient information). Levels are estimates based on model family positioning or names, not benchmark rankings.",
                 footerCopy: "Pricing is provided by OpenRouter's public API and may differ from providers' direct rates.",
                 footerStatus2: "Live OpenRouter data",
                 unit1M: "Per 1M Tokens",
@@ -293,6 +328,37 @@
             "moonshotai/kimi-k3.1-pro",
             "google/gemini-4-argon"
         ]);
+
+        const MODEL_LEVEL_BY_ID = {
+            "openai/gpt-6.1-sol": "flagship",
+            "openai/gpt-6-luna": "lightweight",
+            "openai/gpt-6.1-terra": "intermediate",
+            "anthropic/claude-opus-5.5": "flagship",
+            "anthropic/claude-sonnet-5.5": "advanced",
+            "anthropic/claude-haiku-5.5": "lightweight",
+            "deepseek/deepseek-v4.1-flash": "intermediate",
+            "moonshotai/kimi-k3.1-pro": "flagship",
+            "google/gemini-4-argon": "flagship"
+        };
+
+        const MODEL_LEVELS = {
+            flagship: { rank: 0, zh: "旗艦級", en: "Flagship", badge: "model-level-flagship bg-purple-500/10 text-purple-400 border-purple-500/20" },
+            advanced: { rank: 1, zh: "高階", en: "Advanced", badge: "model-level-advanced bg-sky-500/10 text-sky-400 border-sky-500/20" },
+            intermediate: { rank: 2, zh: "中階", en: "Mid-range", badge: "model-level-intermediate bg-amber-500/10 text-amber-400 border-amber-500/20" },
+            lightweight: { rank: 3, zh: "輕量級", en: "Lightweight", badge: "model-level-lightweight bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
+            general: { rank: 4, zh: "一般級", en: "General", badge: "model-level-general bg-slate-800 text-slate-300 border-slate-700" }
+        };
+
+        function getModelLevel(id, name) {
+            if (MODEL_LEVEL_BY_ID[id]) return MODEL_LEVEL_BY_ID[id];
+
+            const modelName = `${id} ${name}`.toLowerCase();
+            if (/\b(?:haiku|flash|mini|nano|lite|small|tiny|instant|fast|edge)\b|(?:^|[-_/])(?:1|3|7|8)b(?:[-_/]|$)/i.test(modelName)) return "lightweight";
+            if (/\b(?:opus|reasoner|reasoning|thinking|ultra|flagship)\b|(?:^|[-_/ ])(?:pro|max)(?:[-_/:. ]|$)|(?:70|72|100|110|120|235|405)b\b/i.test(modelName)) return "flagship";
+            if (/\b(?:sonnet|plus|medium)\b|(?:32|34|40)b\b/i.test(modelName)) return "advanced";
+            if (/\b(?:standard|balanced|base)\b|(?:14|16|20|27|30)b\b/i.test(modelName)) return "intermediate";
+            return "general";
+        }
 
         const MODEL_DESCRIPTIONS_ZH = {
             "openai/gpt-6.1-sol": "GPT-6 系列的升級型號，定位低於旗艦 GPT-6 Astra。適合代理式程式開發、電腦操作，以及需要處理大量文件的專業工作。",
@@ -424,7 +490,7 @@
         // State Variables
         let activeUnit = "1M"; // '1M' or '1K'
         let selectedProvider = "All";
-        let sortDirection = { name: 'asc', input: 'asc', output: 'asc' };
+        let sortDirection = { name: 'asc', level: 'asc', input: 'asc', output: 'asc' };
 
         // Language Switcher Function
         function setLanguage(lang) {
@@ -442,9 +508,11 @@
             document.getElementById('featuredOnlyLabel').innerText = text.featuredOnlyLabel;
 
             document.getElementById('thModelName').innerText = text.thModelName;
+            document.getElementById('thModelLevel').innerText = text.thModelLevel;
             document.getElementById('thInputPrice').innerText = text.thInputPrice;
             document.getElementById('thOutputPrice').innerText = text.thOutputPrice;
             document.getElementById('thDetails').innerText = text.thDetails;
+            document.getElementById('modelLevelNote').innerText = text.modelLevelNote;
 
             document.getElementById('noResultsTitle').innerText = text.noResultsTitle;
             document.getElementById('noResultsDesc').innerText = text.noResultsDesc;
@@ -519,10 +587,14 @@
                 const description = currentLang === 'zh'
                     ? (model.descriptionZh || model.description || model.id)
                     : (model.description || model.id);
+                const level = MODEL_LEVELS[model.modelLevel] || MODEL_LEVELS.general;
                 return `
                     <tr class="hover:bg-slate-900/60 transition-colors group">
                         <td class="py-4 px-6 font-semibold text-white">
                             <a class="hover:text-sky-400" href="${modelUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(model.name)}</a>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="model-level-badge inline-flex whitespace-nowrap rounded-md border px-2.5 py-1 text-xs font-medium ${level.badge}">${currentLang === 'zh' ? level.zh : level.en}</span>
                         </td>
                         <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.inputUSD, activeUnit, currencyKey)}</td>
                         <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.outputUSD, activeUnit, currencyKey)}</td>
@@ -569,6 +641,7 @@
                         id,
                         name,
                         provider,
+                        modelLevel: getModelLevel(id, name),
                         description: typeof item.description === "string" ? item.description : "",
                         descriptionZh: MODEL_DESCRIPTIONS_ZH[id] || "",
                         inputUSD: inputPrice * 1000000,
@@ -624,8 +697,8 @@
             sortDirection[key] = dir;
 
             models.sort((a, b) => {
-                let valA = key === 'input' ? a.inputUSD : key === 'output' ? a.outputUSD : a.name;
-                let valB = key === 'input' ? b.inputUSD : key === 'output' ? b.outputUSD : b.name;
+                let valA = key === 'input' ? a.inputUSD : key === 'output' ? a.outputUSD : key === 'level' ? (MODEL_LEVELS[a.modelLevel] || MODEL_LEVELS.general).rank : a.name;
+                let valB = key === 'input' ? b.inputUSD : key === 'output' ? b.outputUSD : key === 'level' ? (MODEL_LEVELS[b.modelLevel] || MODEL_LEVELS.general).rank : b.name;
 
                 if (valA < valB) return dir === 'asc' ? -1 : 1;
                 if (valA > valB) return dir === 'asc' ? 1 : -1;
