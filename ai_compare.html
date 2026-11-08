@@ -111,53 +111,6 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
 
-        <!-- Stats Quick View Grid -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestIn">最低輸入單價</p>
-                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestInput">—</h3>
-                    <p class="text-xs text-slate-400 mt-1" id="statCheapestInputModel">—</p>
-                </div>
-                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
-                    <i class="fa-solid fa-arrow-down-short-wide text-xl"></i>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestOut">最低輸出單價</p>
-                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestOutput">—</h3>
-                    <p class="text-xs text-slate-400 mt-1" id="statCheapestOutputModel">—</p>
-                </div>
-                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
-                    <i class="fa-solid fa-bolt text-xl"></i>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleFlagshipAvg">平均價格 (每 1M)</p>
-                    <h3 class="text-2xl font-extrabold text-sky-400 mt-1" id="statFlagshipAvg">—</h3>
-                    <p class="text-xs text-slate-400 mt-1" id="statSubFlagshipAvg">輸入 / 輸出</p>
-                </div>
-                <div class="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
-                    <i class="fa-solid fa-crown text-xl"></i>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleTotalModels">已收錄 AI 模型</p>
-                    <h3 class="text-2xl font-extrabold text-purple-400 mt-1" id="statTotalModelsValue">載入中…</h3>
-                    <p class="text-xs text-slate-400 mt-1" id="statSubTotalModels">OpenRouter</p>
-                </div>
-                <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
-                    <i class="fa-solid fa-layer-group text-xl"></i>
-                </div>
-            </div>
-        </section>
-
         <!-- Search, Filter & Table Container -->
         <section class="glass-card rounded-2xl overflow-hidden border border-slate-800">
             <!-- Toolbar -->
@@ -235,12 +188,6 @@
                 title: "AI 模型 API 價格目錄",
                 subtitle: "OpenRouter 即時模型目錄及價格",
                 currencyLbl: "貨幣:",
-                statCheapestIn: "最低輸入單價",
-                statCheapestOut: "最低輸出單價",
-                statFlagshipAvg: "平均價格 (每 1M)",
-                statSubFlagshipAvg: "輸入 / 輸出",
-                statTotalModels: "已收錄 AI 模型",
-                statSubTotalModels: "OpenRouter",
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
@@ -260,12 +207,6 @@
                 title: "AI Model API Pricing Directory",
                 subtitle: "Live model catalog and pricing from OpenRouter",
                 currencyLbl: "Currency:",
-                statCheapestIn: "Cheapest Input Rate",
-                statCheapestOut: "Cheapest Output Rate",
-                statFlagshipAvg: "Average price (per 1M)",
-                statSubFlagshipAvg: "Input / Output",
-                statTotalModels: "Tracked AI Models",
-                statSubTotalModels: "OpenRouter",
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
@@ -435,11 +376,6 @@
 
             // Update UI elements
             document.getElementById('lblCurrency').innerText = text.currencyLbl;
-            document.getElementById('statTitleCheapestIn').innerText = text.statCheapestIn;
-            document.getElementById('statTitleCheapestOut').innerText = text.statCheapestOut;
-            document.getElementById('statTitleFlagshipAvg').innerText = text.statFlagshipAvg;
-            document.getElementById('statSubFlagshipAvg').innerText = text.statSubFlagshipAvg;
-            document.getElementById('statTitleTotalModels').innerText = text.statTotalModels;
             document.getElementById('siteSubtitle').innerText = text.subtitle;
 
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
@@ -496,28 +432,6 @@
                 minimumFractionDigits: 2
             }).format(amount);
             return `${currency.symbol}${formatted}`;
-        }
-
-        function updateStats() {
-            if (models.length === 0) return;
-
-            const currencyKey = document.getElementById("currencySelect").value;
-            const cheapestInput = [...models].sort((a, b) => a.inputUSD - b.inputUSD)[0];
-            const cheapestOutput = [...models].sort((a, b) => a.outputUSD - b.outputUSD)[0];
-            const averageInput = models.reduce((total, model) => total + model.inputUSD, 0) / models.length;
-            const averageOutput = models.reduce((total, model) => total + model.outputUSD, 0) / models.length;
-            const providers = new Set(models.map(model => model.provider));
-
-            document.getElementById('statCheapestInput').innerText = formatPrice(cheapestInput.inputUSD, '1M', currencyKey);
-            document.getElementById('statCheapestInputModel').innerText = cheapestInput.name;
-            document.getElementById('statCheapestOutput').innerText = formatPrice(cheapestOutput.outputUSD, '1M', currencyKey);
-            document.getElementById('statCheapestOutputModel').innerText = cheapestOutput.name;
-            document.getElementById('statFlagshipAvg').innerText =
-                `${formatPrice(averageInput, '1M', currencyKey)} / ${formatPrice(averageOutput, '1M', currencyKey)}`;
-            document.getElementById('statTotalModelsValue').innerText =
-                currentLang === 'zh' ? `${models.length} 款模型` : `${models.length} models`;
-            document.getElementById('statSubTotalModels').innerText =
-                currentLang === 'zh' ? `${providers.size} 個供應商` : `${providers.size} providers`;
         }
 
         function renderTable(data = models) {
@@ -602,13 +516,10 @@
                 const providerSelect = document.getElementById("providerSelect");
                 providerSelect.replaceChildren(new Option(i18n[currentLang].btnAllProviders, "All"));
                 providers.forEach(provider => providerSelect.add(new Option(provider, provider)));
-                document.getElementById("statSubTotalModels").innerText =
-                    currentLang === 'zh' ? `${providers.length} 個供應商` : `${providers.length} providers`;
                 const featuredCount = models.filter(model => DEFAULT_MODEL_IDS.has(model.id)).length;
                 status.innerText = currentLang === 'zh'
                     ? `資料來源：OpenRouter · 預設指定模型 ${featuredCount}/${DEFAULT_MODEL_IDS.size} 款 · 完整目錄 ${models.length} 款 · ${new Date().toLocaleString()}`
                     : `Source: OpenRouter · ${featuredCount}/${DEFAULT_MODEL_IDS.size} selected models · ${models.length} total · ${new Date().toLocaleString()}`;
-                updateStats();
                 filterModels();
             } catch (error) {
                 models = [];
@@ -654,7 +565,6 @@
 
         // Global Display Refresh
         function updateDisplay() {
-            updateStats();
             filterModels();
         }
 
