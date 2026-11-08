@@ -106,13 +106,31 @@
             border-color: #cbd5e1 !important;
             color: #475569 !important;
         }
-        body[data-row-density="compact"] #modelTableBody td {
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
+        .column-resize-handle {
+            position: absolute;
+            top: 0;
+            right: -6px;
+            bottom: 0;
+            z-index: 1;
+            width: 12px;
+            cursor: col-resize;
+            touch-action: none;
         }
-        body[data-row-density="comfortable"] #modelTableBody td {
-            padding-top: 1.5rem !important;
-            padding-bottom: 1.5rem !important;
+        .column-resize-handle span {
+            display: block;
+            width: 2px;
+            height: 100%;
+            margin: auto;
+            background: transparent;
+        }
+        .column-resize-handle:hover span,
+        .column-resize-handle:focus-visible span,
+        .column-resize-handle.is-resizing span {
+            background: #38bdf8;
+        }
+        body.is-resizing-columns {
+            cursor: col-resize;
+            user-select: none;
         }
         .glass-card {
             background: rgba(19, 27, 46, 0.7);
@@ -204,14 +222,6 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
-                    <label class="flex items-center gap-2 text-xs text-slate-400">
-                        <span id="rowDensityLabel">列距</span>
-                        <select id="rowDensitySelect" onchange="setRowDensity(this.value)" class="bg-slate-900 border border-slate-800 rounded-lg px-2 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
-                            <option value="compact">緊湊</option>
-                            <option value="standard" selected>標準</option>
-                            <option value="comfortable">寬鬆</option>
-                        </select>
-                    </label>
                     <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                         <input id="featuredOnly" type="checkbox" checked onchange="filterModels()" class="accent-sky-500">
                         <span id="featuredOnlyLabel">只顯示指定模型</span>
@@ -225,20 +235,31 @@
 
             <!-- Pricing Table -->
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table id="modelTable" class="w-full min-w-[980px] table-fixed text-left border-collapse">
+                    <colgroup>
+                        <col style="width: 22%">
+                        <col style="width: 12%">
+                        <col style="width: 12%">
+                        <col style="width: 12%">
+                        <col style="width: 42%">
+                    </colgroup>
                     <thead>
                         <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                            <th class="py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('name')">
+                            <th class="relative py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('name')">
                                 <span id="thModelName">模型名稱</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="0" aria-label="調整模型名稱欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
-                            <th class="py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
+                            <th class="relative py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
                                 <span id="thModelLevel">Model Level</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="1" aria-label="調整 Model Level 欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
-                            <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
+                            <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
                                 <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="2" aria-label="調整輸入單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
-                            <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('output')">
+                            <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('output')">
                                 <span id="thOutputPrice">輸出單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="3" aria-label="調整輸出單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
                             <th class="py-4 px-6" id="thDetails">說明</th>
                         </tr>
@@ -287,10 +308,7 @@
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
-                rowDensityLabel: "列距",
-                densityCompact: "緊湊",
-                densityStandard: "標準",
-                densityComfortable: "寬鬆",
+                columnResizeLabels: ["調整模型名稱欄闊度", "調整 Model Level 欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度"],
                 thModelName: "模型名稱",
                 thModelLevel: "Model Level",
                 thInputPrice: "輸入單價",
@@ -313,10 +331,7 @@
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
-                rowDensityLabel: "Row spacing",
-                densityCompact: "Compact",
-                densityStandard: "Standard",
-                densityComfortable: "Comfortable",
+                columnResizeLabels: ["Resize Model Name column", "Resize Model Level column", "Resize Input Price column", "Resize Output Price column"],
                 thModelName: "Model Name",
                 thModelLevel: "Model Level",
                 thInputPrice: "Input Price",
@@ -509,12 +524,13 @@
         let activeUnit = "1M"; // '1M' or '1K'
         let selectedProvider = "All";
         let sortDirection = { name: 'asc', level: 'asc', input: 'asc', output: 'asc' };
+        let columnWidths = [22, 12, 12, 12, 42];
+        let activeColumnResize = null;
 
         // Language Switcher Function
         function setLanguage(lang) {
             currentLang = lang;
             const text = i18n[lang];
-            const densitySelect = document.getElementById('rowDensitySelect');
 
             // Update UI elements
             document.getElementById('lblCurrency').innerText = text.currencyLbl;
@@ -525,10 +541,10 @@
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
             document.getElementById('providerSelect').options[0].text = text.btnAllProviders;
             document.getElementById('featuredOnlyLabel').innerText = text.featuredOnlyLabel;
-            document.getElementById('rowDensityLabel').innerText = text.rowDensityLabel;
-            densitySelect.options[0].text = text.densityCompact;
-            densitySelect.options[1].text = text.densityStandard;
-            densitySelect.options[2].text = text.densityComfortable;
+            document.querySelectorAll('.column-resize-handle').forEach((handle, index) => {
+                handle.setAttribute('aria-label', text.columnResizeLabels[index]);
+                handle.title = lang === 'zh' ? "拖曳以調整欄闊度" : "Drag to resize columns";
+            });
 
             document.getElementById('thModelName').innerText = text.thModelName;
             document.getElementById('thModelLevel').innerText = text.thModelLevel;
@@ -549,9 +565,61 @@
             updateDisplay();
         }
 
-        function setRowDensity(density) {
-            if (!['compact', 'standard', 'comfortable'].includes(density)) return;
-            document.body.dataset.rowDensity = density;
+        function applyColumnResize(boundary, deltaPercent) {
+            const minimumWidths = [14, 9, 10, 10, 20];
+            const adjacentWidth = columnWidths[boundary] + columnWidths[boundary + 1];
+            const nextLeftWidth = Math.min(
+                adjacentWidth - minimumWidths[boundary + 1],
+                Math.max(minimumWidths[boundary], columnWidths[boundary] + deltaPercent)
+            );
+            columnWidths[boundary] = nextLeftWidth;
+            columnWidths[boundary + 1] = adjacentWidth - nextLeftWidth;
+            document.querySelectorAll('#modelTable colgroup col').forEach((column, index) => {
+                column.style.width = `${columnWidths[index]}%`;
+            });
+        }
+
+        function initializeColumnResizers() {
+            document.querySelectorAll('.column-resize-handle').forEach(handle => {
+                handle.addEventListener('pointerdown', event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const boundary = Number(handle.dataset.resizeBoundary);
+                    activeColumnResize = {
+                        boundary,
+                        startX: event.clientX,
+                        startWidths: [...columnWidths],
+                        tableWidth: document.getElementById('modelTable').getBoundingClientRect().width
+                    };
+                    handle.classList.add('is-resizing');
+                    document.body.classList.add('is-resizing-columns');
+                    handle.setPointerCapture(event.pointerId);
+                });
+                handle.addEventListener('pointermove', event => {
+                    if (!activeColumnResize || !handle.hasPointerCapture(event.pointerId)) return;
+                    columnWidths = [...activeColumnResize.startWidths];
+                    applyColumnResize(
+                        activeColumnResize.boundary,
+                        (event.clientX - activeColumnResize.startX) / activeColumnResize.tableWidth * 100
+                    );
+                });
+                const finishResize = event => {
+                    if (!activeColumnResize || activeColumnResize.boundary !== Number(handle.dataset.resizeBoundary)) return;
+                    if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+                    activeColumnResize = null;
+                    handle.classList.remove('is-resizing');
+                    document.body.classList.remove('is-resizing-columns');
+                };
+                handle.addEventListener('pointerup', finishResize);
+                handle.addEventListener('pointercancel', finishResize);
+                handle.addEventListener('keydown', event => {
+                    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    applyColumnResize(Number(handle.dataset.resizeBoundary), event.key === 'ArrowRight' ? 1 : -1);
+                });
+                handle.addEventListener('click', event => event.stopPropagation());
+            });
         }
 
         function setTheme(theme) {
@@ -743,6 +811,7 @@
         // Initial Load setup
         window.onload = function() {
             models = [];
+            initializeColumnResizers();
             setLanguage('zh');
             loadModels();
         };
