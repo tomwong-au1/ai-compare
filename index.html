@@ -112,6 +112,14 @@
             border-color: #cbd5e1 !important;
             color: #475569 !important;
         }
+        body[data-row-density="compact"] #modelTableBody td {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        body[data-row-density="comfortable"] #modelTableBody td {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+        }
         .glass-card {
             background: rgba(19, 27, 46, 0.7);
             backdrop-filter: blur(12px);
@@ -202,6 +210,14 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
+                    <label class="flex items-center gap-2 text-xs text-slate-400">
+                        <span id="rowDensityLabel">列距</span>
+                        <select id="rowDensitySelect" onchange="setRowDensity(this.value)" class="bg-slate-900 border border-slate-800 rounded-lg px-2 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
+                            <option value="compact">緊湊</option>
+                            <option value="standard" selected>標準</option>
+                            <option value="comfortable">寬鬆</option>
+                        </select>
+                    </label>
                     <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                         <input id="featuredOnly" type="checkbox" checked onchange="filterModels()" class="accent-sky-500">
                         <span id="featuredOnlyLabel">只顯示指定模型</span>
@@ -277,6 +293,10 @@
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
+                rowDensityLabel: "列距",
+                densityCompact: "緊湊",
+                densityStandard: "標準",
+                densityComfortable: "寬鬆",
                 thModelName: "模型名稱",
                 thModelLevel: "Model Level",
                 thInputPrice: "輸入單價",
@@ -299,6 +319,10 @@
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
+                rowDensityLabel: "Row spacing",
+                densityCompact: "Compact",
+                densityStandard: "Standard",
+                densityComfortable: "Comfortable",
                 thModelName: "Model Name",
                 thModelLevel: "Model Level",
                 thInputPrice: "Input Price",
@@ -496,6 +520,7 @@
         function setLanguage(lang) {
             currentLang = lang;
             const text = i18n[lang];
+            const densitySelect = document.getElementById('rowDensitySelect');
 
             // Update UI elements
             document.getElementById('lblCurrency').innerText = text.currencyLbl;
@@ -506,6 +531,10 @@
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
             document.getElementById('providerSelect').options[0].text = text.btnAllProviders;
             document.getElementById('featuredOnlyLabel').innerText = text.featuredOnlyLabel;
+            document.getElementById('rowDensityLabel').innerText = text.rowDensityLabel;
+            densitySelect.options[0].text = text.densityCompact;
+            densitySelect.options[1].text = text.densityStandard;
+            densitySelect.options[2].text = text.densityComfortable;
 
             document.getElementById('thModelName').innerText = text.thModelName;
             document.getElementById('thModelLevel').innerText = text.thModelLevel;
@@ -524,6 +553,11 @@
             document.getElementById('unit1K').innerText = text.unit1K;
 
             updateDisplay();
+        }
+
+        function setRowDensity(density) {
+            if (!['compact', 'standard', 'comfortable'].includes(density)) return;
+            document.body.dataset.rowDensity = density;
         }
 
         function setTheme(theme) {
