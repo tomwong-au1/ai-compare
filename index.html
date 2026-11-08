@@ -76,7 +76,7 @@
                     <h1 class="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-sky-400 bg-clip-text text-transparent">
                         AI Model API Pricing Index
                     </h1>
-                    <p class="text-xs text-slate-400">Live API Token Rates & Interactive Cost Estimator</p>
+                    <p class="text-xs text-slate-400" id="siteSubtitle">OpenRouter 即時模型目錄及價格</p>
                 </div>
             </div>
 
@@ -117,7 +117,7 @@
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestIn">最低輸入單價</p>
                     <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestInput">A$0.15</h3>
-                    <p class="text-xs text-slate-400 mt-1">GPT 6.1 Luna</p>
+                    <p class="text-xs text-slate-400 mt-1" id="statCheapestInputModel">—</p>
                 </div>
                 <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
                     <i class="fa-solid fa-arrow-down-short-wide text-xl"></i>
@@ -128,7 +128,7 @@
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestOut">最低輸出單價</p>
                     <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestOutput">A$0.76</h3>
-                    <p class="text-xs text-slate-400 mt-1">GPT 6.1 Luna</p>
+                    <p class="text-xs text-slate-400 mt-1" id="statCheapestOutputModel">—</p>
                 </div>
                 <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
                     <i class="fa-solid fa-bolt text-xl"></i>
@@ -137,9 +137,9 @@
 
             <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleFlagshipAvg">旗艦模型均價 (1M)</p>
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleFlagshipAvg">平均價格 (每 1M)</p>
                     <h3 class="text-2xl font-extrabold text-sky-400 mt-1" id="statFlagshipAvg">A$4.05 / A$20.27</h3>
-                    <p class="text-xs text-slate-400 mt-1" id="statSubFlagshipAvg">輸入 / 輸出 平均</p>
+                    <p class="text-xs text-slate-400 mt-1" id="statSubFlagshipAvg">輸入 / 輸出</p>
                 </div>
                 <div class="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
                     <i class="fa-solid fa-crown text-xl"></i>
@@ -150,7 +150,7 @@
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleTotalModels">已收錄 AI 模型</p>
                     <h3 class="text-2xl font-extrabold text-purple-400 mt-1" id="statTotalModelsValue">8 款模型</h3>
-                    <p class="text-xs text-slate-400 mt-1" id="statSubTotalModels">4 家主流 AI 供應商</p>
+                    <p class="text-xs text-slate-400 mt-1" id="statSubTotalModels">OpenRouter</p>
                 </div>
                 <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
                     <i class="fa-solid fa-layer-group text-xl"></i>
@@ -165,18 +165,16 @@
                 <!-- Search Box -->
                 <div class="relative flex-1 max-w-md">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
-                    <input type="text" id="searchInput" onkeyup="filterModels()" placeholder="搜尋模型名稱、分級或特點..."
+                    <input type="text" id="searchInput" oninput="filterModels()" placeholder="搜尋模型名稱、分級或特點..."
                         class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all">
                 </div>
 
                 <!-- Provider Filter Tabs -->
-                <div class="flex flex-wrap items-center gap-1.5" id="providerFilters">
-                    <button onclick="filterProvider('All')" class="provider-btn active text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-all" id="btnFilterAll">全部廠商</button>
-                    <button onclick="filterProvider('DeepSeek')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">DeepSeek</button>
-                    <button onclick="filterProvider('OpenAI')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">OpenAI</button>
-                    <button onclick="filterProvider('Anthropic')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">Anthropic</button>
-                    <button onclick="filterProvider('Moonshot')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">Moonshot / Kimi</button>
-                    <button onclick="filterProvider('Google')" class="provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all">Google</button>
+                <div class="flex items-center gap-2">
+                    <label class="sr-only" for="providerSelect" id="providerFilterLabel">供應商篩選</label>
+                    <select id="providerSelect" onchange="filterModels()" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
+                        <option value="All">全部供應商</option>
+                    </select>
                 </div>
             </div>
 
@@ -189,15 +187,14 @@
                                 <span id="thModelName">模型名稱</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
                             <th class="py-4 px-6" id="thProvider">供應商</th>
-                            <th class="py-4 px-6" id="thTier">定位層級</th>
+                            <th class="py-4 px-6" id="thModelId">模型 ID</th>
                             <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
                                 <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
                             <th class="py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('output')">
                                 <span id="thOutputPrice">輸出單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                             </th>
-                            <th class="py-4 px-6 text-right" id="thEstCost">預估批次總花費</th>
-                            <th class="py-4 px-6" id="thNotes">特點 / 備註</th>
+                            <th class="py-4 px-6" id="thDetails">說明</th>
                         </tr>
                     </thead>
                     <tbody id="modelTableBody" class="divide-y divide-slate-800/60 text-sm font-medium">
@@ -214,47 +211,16 @@
             </div>
         </section>
 
-        <!-- Model Tier Information Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-card rounded-2xl p-6 border border-slate-800">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
-                    <h3 class="font-bold text-slate-200" id="tier1Title">極速輕量層級 (Ultra-Light)</h3>
-                </div>
-                <p class="text-xs text-slate-400 leading-relaxed" id="tier1Desc">
-                    專為超低延遲需求、簡單文本分類、即時 Agent 對話與高吞吐背景任務設計 (如 DeepSeek V4.1, GPT 6.1 Luna, Gemini 4 Argon)。
-                </p>
-            </div>
-
-            <div class="glass-card rounded-2xl p-6 border border-slate-800">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="w-3 h-3 rounded-full bg-sky-400"></span>
-                    <h3 class="font-bold text-slate-200" id="tier2Title">均衡視覺層級 (Balanced)</h3>
-                </div>
-                <p class="text-xs text-slate-400 leading-relaxed" id="tier2Desc">
-                    最佳成本與推理效能平衡，具備強大多模態視覺與螢幕辨識能力 (如 GPT 6.1 Terra, Claude Sonnet 5.5)。
-                </p>
-            </div>
-
-            <div class="glass-card rounded-2xl p-6 border border-slate-800">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="w-3 h-3 rounded-full bg-purple-400"></span>
-                    <h3 class="font-bold text-slate-200" id="tier3Title">旗艦高階推理層級 (Flagship)</h3>
-                </div>
-                <p class="text-xs text-slate-400 leading-relaxed" id="tier3Desc">
-                    具備最高智商與極強長文本理解，適合複雜程式編寫、高階數學推理與深度分析 (如 GPT 6.1 SOL, Opus 5.5, Kimi 3.1 Pro)。
-                </p>
-            </div>
-        </section>
+        <p id="apiStatus" class="text-xs text-slate-500 text-center" role="status">正在載入 OpenRouter 模型資料…</p>
     </main>
 
     <!-- Footer -->
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 text-center text-xs text-slate-500">
         <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p id="footerCopy">© 2026 AI Price Index Directory. 價格為官方標準 API 收費（1 USD ≈ 1.52 AUD, 7.80 HKD）。</p>
+            <p id="footerCopy">價格由 OpenRouter 公開 API 提供；非模型供應商直接報價。</p>
             <div class="flex items-center space-x-4">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400"></i> <span id="footerStatus1">標準 API 費率</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-sky-400"></i> <span id="footerStatus2">更新於 2026年11月</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400"></i> <a class="hover:text-sky-400" href="https://openrouter.ai/models" target="_blank" rel="noopener noreferrer">OpenRouter 模型目錄</a></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-sky-400"></i> <span id="footerStatus2">即時資料</span></span>
             </div>
         </div>
     </footer>
@@ -265,77 +231,55 @@
         const i18n = {
             zh: {
                 title: "AI 模型 API 價格目錄",
-                subtitle: "即時 API Token 費率與互動式成本估算器",
+                subtitle: "OpenRouter 即時模型目錄及價格",
                 currencyLbl: "貨幣:",
                 statCheapestIn: "最低輸入單價",
                 statCheapestOut: "最低輸出單價",
-                statFlagshipAvg: "旗艦模型均價 (1M)",
-                statSubFlagshipAvg: "輸入 / 輸出 平均",
+                statFlagshipAvg: "平均價格 (每 1M)",
+                statSubFlagshipAvg: "輸入 / 輸出",
                 statTotalModels: "已收錄 AI 模型",
-                statSubTotalModels: "4 家主流 AI 供應商",
-                modelsCount: "8 款模型",
-                searchPlaceholder: "搜尋模型名稱、分級或特點...",
-                btnAllProviders: "全部廠商",
+                statSubTotalModels: "OpenRouter",
+                modelsCount: "載入中…",
+                searchPlaceholder: "搜尋模型名稱、ID 或說明...",
+                btnAllProviders: "全部供應商",
                 thModelName: "模型名稱",
                 thProvider: "供應商",
-                thTier: "定位層級",
+                thModelId: "模型 ID",
                 thInputPrice: "輸入單價",
                 thOutputPrice: "輸出單價",
-                thEstCost: "預估批次總花費",
-                thNotes: "特點 / 備註",
+                thDetails: "模型說明",
                 noResultsTitle: "未找到符合條件的 AI 模型",
-                noResultsDesc: "請嘗試搜尋其他關鍵字或重設供應商篩選器。",
-                tier1Title: "極速輕量層級 (Ultra-Light)",
-                tier1Desc: "專為超低延遲需求、簡單文本分類、即時 Agent 對話與高吞吐背景任務設計 (如 DeepSeek V4.1, GPT 6.1 Luna, Gemini 4 Argon)。",
-                tier2Title: "均衡視覺層級 (Balanced)",
-                tier2Desc: "最佳成本與推理效能平衡，具備強大多模態視覺與螢幕辨識能力 (如 GPT 6.1 Terra, Claude Sonnet 5.5)。",
-                tier3Title: "旗艦高階推理層級 (Flagship)",
-                tier3Desc: "具備最高智商與極強長文本理解，適合複雜程式編寫、高階數學推理與深度分析 (如 GPT 6.1 SOL, Opus 5.5, Kimi 3.1 Pro)。",
-                footerCopy: "© 2026 AI Price Index Directory. 價格為官方標準 API 收費（1 USD ≈ 1.52 AUD, 7.80 HKD）。",
-                footerStatus1: "標準 API 費率",
-                footerStatus2: "更新於 2026年11月",
+                noResultsDesc: "請嘗試其他搜尋字詞或供應商。",
+                footerCopy: "價格由 OpenRouter 公開 API 提供，並不代表模型供應商直接報價。",
+                footerStatus2: "OpenRouter 即時資料",
                 unit1M: "每 1M Tokens",
-                unit1K: "每 1K Tokens",
-                tierUltraLight: "超輕量",
-                tierBalanced: "均衡型",
-                tierFlagship: "旗艦型"
+                unit1K: "每 1K Tokens"
             },
             en: {
                 title: "AI Model API Pricing Directory",
-                subtitle: "Live API Token Rates & Interactive Cost Estimator",
+                subtitle: "Live model catalog and pricing from OpenRouter",
                 currencyLbl: "Currency:",
                 statCheapestIn: "Cheapest Input Rate",
                 statCheapestOut: "Cheapest Output Rate",
-                statFlagshipAvg: "Flagship Average (1M)",
-                statSubFlagshipAvg: "In / Out Average",
+                statFlagshipAvg: "Average price (per 1M)",
+                statSubFlagshipAvg: "Input / Output",
                 statTotalModels: "Tracked AI Models",
-                statSubTotalModels: "4 Premier AI Providers",
-                modelsCount: "8 Models",
-                searchPlaceholder: "Search model name, tier or specs...",
-                btnAllProviders: "All Providers",
+                statSubTotalModels: "OpenRouter",
+                modelsCount: "Loading…",
+                searchPlaceholder: "Search model name, ID, or description...",
+                btnAllProviders: "All providers",
                 thModelName: "Model Name",
                 thProvider: "Provider",
-                thTier: "Tier Category",
+                thModelId: "Model ID",
                 thInputPrice: "Input Price",
                 thOutputPrice: "Output Price",
-                thEstCost: "Est. Batch Cost",
-                thNotes: "Features / Notes",
+                thDetails: "Description",
                 noResultsTitle: "No AI models matched your search",
-                noResultsDesc: "Try searching for a different name or resetting your provider filter.",
-                tier1Title: "Ultra-Light & Speed Tier",
-                tier1Desc: "Designed for ultra-low latency requirements, simple classification, and high-throughput background tasks (e.g., DeepSeek V4.1, GPT 6.1 Luna, Gemini 4 Argon).",
-                tier2Title: "Balanced & Vision Tier",
-                tier2Desc: "Ideal balance between cost and high reasoning performance with visual analysis (e.g., GPT 6.1 Terra, Sonnet 5.5).",
-                tier3Title: "Flagship & Reasoning Tier",
-                tier3Desc: "Maximum intelligence for autonomous coding, complex math reasoning, and long context window retrieval (e.g., GPT 6.1 SOL, Opus 5.5, Kimi 3.1 Pro).",
-                footerCopy: "© 2026 AI Price Index Directory. Standard developer API rates (1 USD ≈ 1.52 AUD, 7.80 HKD).",
-                footerStatus1: "Standard API Rates",
-                footerStatus2: "Updated Nov 2026",
+                noResultsDesc: "Try a different search term or provider.",
+                footerCopy: "Pricing is provided by OpenRouter's public API and may differ from providers' direct rates.",
+                footerStatus2: "Live OpenRouter data",
                 unit1M: "Per 1M Tokens",
-                unit1K: "Per 1K Tokens",
-                tierUltraLight: "Ultra-Light",
-                tierBalanced: "Balanced",
-                tierFlagship: "Flagship"
+                unit1K: "Per 1K Tokens"
             }
         };
 
@@ -343,7 +287,7 @@
         let currentLang = 'zh';
 
         // Model Pricing Database (Base USD)
-        const models = [
+        let models = [
             {
                 name: "DeepSeek V4.1",
                 provider: "DeepSeek",
@@ -474,32 +418,22 @@
             document.getElementById('statTitleFlagshipAvg').innerText = text.statFlagshipAvg;
             document.getElementById('statSubFlagshipAvg').innerText = text.statSubFlagshipAvg;
             document.getElementById('statTitleTotalModels').innerText = text.statTotalModels;
-            document.getElementById('statSubTotalModels').innerText = text.statSubTotalModels;
-            document.getElementById('statTotalModelsValue').innerText = text.modelsCount;
+            document.getElementById('siteSubtitle').innerText = text.subtitle;
 
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
-            document.getElementById('btnFilterAll').innerText = text.btnAllProviders;
+            document.getElementById('providerSelect').options[0].text = text.btnAllProviders;
 
             document.getElementById('thModelName').innerText = text.thModelName;
             document.getElementById('thProvider').innerText = text.thProvider;
-            document.getElementById('thTier').innerText = text.thTier;
+            document.getElementById('thModelId').innerText = text.thModelId;
             document.getElementById('thInputPrice').innerText = text.thInputPrice;
             document.getElementById('thOutputPrice').innerText = text.thOutputPrice;
-            document.getElementById('thEstCost').innerText = text.thEstCost;
-            document.getElementById('thNotes').innerText = text.thNotes;
+            document.getElementById('thDetails').innerText = text.thDetails;
 
             document.getElementById('noResultsTitle').innerText = text.noResultsTitle;
             document.getElementById('noResultsDesc').innerText = text.noResultsDesc;
 
-            document.getElementById('tier1Title').innerText = text.tier1Title;
-            document.getElementById('tier1Desc').innerText = text.tier1Desc;
-            document.getElementById('tier2Title').innerText = text.tier2Title;
-            document.getElementById('tier2Desc').innerText = text.tier2Desc;
-            document.getElementById('tier3Title').innerText = text.tier3Title;
-            document.getElementById('tier3Desc').innerText = text.tier3Desc;
-
             document.getElementById('footerCopy').innerText = text.footerCopy;
-            document.getElementById('footerStatus1').innerText = text.footerStatus1;
             document.getElementById('footerStatus2').innerText = text.footerStatus2;
 
             document.getElementById('unit1M').innerText = text.unit1M;
@@ -520,116 +454,141 @@
             }
         }
 
-        // Format Currency Function
-        function formatPrice(valInUSD, unit, currencyKey) {
-            const curr = exchangeRates[currencyKey] || exchangeRates.AUD;
-            let price = valInUSD * curr.rate;
-            
-            if (unit === '1K') {
-                price = price / 1000;
-                return `${curr.symbol}${price < 0.01 ? price.toFixed(5) : price.toFixed(4)}`;
-            }
-            
-            return `${curr.symbol}${price.toFixed(2)}`;
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[character]);
         }
 
-        // Render Model Table
+        function formatPrice(pricePerMillionUSD, unit, currencyKey) {
+            const currency = exchangeRates[currencyKey] || exchangeRates.USD;
+            const divisor = unit === '1K' ? 1000 : 1;
+            const amount = pricePerMillionUSD * currency.rate / divisor;
+            const formatted = new Intl.NumberFormat(undefined, {
+                maximumFractionDigits: 6,
+                minimumFractionDigits: 2
+            }).format(amount);
+            return `${currency.symbol}${formatted}`;
+        }
+
+        function updateStats() {
+            if (models.length === 0) return;
+
+            const currencyKey = document.getElementById("currencySelect").value;
+            const cheapestInput = [...models].sort((a, b) => a.inputUSD - b.inputUSD)[0];
+            const cheapestOutput = [...models].sort((a, b) => a.outputUSD - b.outputUSD)[0];
+            const averageInput = models.reduce((total, model) => total + model.inputUSD, 0) / models.length;
+            const averageOutput = models.reduce((total, model) => total + model.outputUSD, 0) / models.length;
+            const providers = new Set(models.map(model => model.provider));
+
+            document.getElementById('statCheapestInput').innerText = formatPrice(cheapestInput.inputUSD, '1M', currencyKey);
+            document.getElementById('statCheapestInputModel').innerText = cheapestInput.name;
+            document.getElementById('statCheapestOutput').innerText = formatPrice(cheapestOutput.outputUSD, '1M', currencyKey);
+            document.getElementById('statCheapestOutputModel').innerText = cheapestOutput.name;
+            document.getElementById('statFlagshipAvg').innerText =
+                `${formatPrice(averageInput, '1M', currencyKey)} / ${formatPrice(averageOutput, '1M', currencyKey)}`;
+            document.getElementById('statTotalModelsValue').innerText =
+                currentLang === 'zh' ? `${models.length} 款模型` : `${models.length} models`;
+            document.getElementById('statSubTotalModels').innerText =
+                currentLang === 'zh' ? `${providers.size} 個供應商` : `${providers.size} providers`;
+        }
+
         function renderTable(data = models) {
             const tableBody = document.getElementById("modelTableBody");
-            const currencyKey = document.getElementById("currencySelect").value;
             const noResults = document.getElementById("noResults");
-            const text = i18n[currentLang];
+            const currencyKey = document.getElementById("currencySelect").value;
 
-            if (data.length === 0) {
-                tableBody.innerHTML = "";
-                noResults.classList.remove("hidden");
-                return;
-            } else {
-                noResults.classList.add("hidden");
-            }
-
-            const inputTokens = 1000000;
-            const outputTokens = 500000;
-
-            // Update stats cards dynamically based on selected currency
-            const curr = exchangeRates[currencyKey];
-            document.getElementById('statCheapestInput').innerText = `${curr.symbol}${(0.10 * curr.rate).toFixed(2)}`;
-            document.getElementById('statCheapestOutput').innerText = `${curr.symbol}${(0.50 * curr.rate).toFixed(2)}`;
-            
-            // Flagship models average (SOL, Opus 5.5, Kimi 3.1 Pro -> Avg input $2.66, Avg output $13.33)
-            const flagshipAvgIn = (2.666 * curr.rate).toFixed(2);
-            const flagshipAvgOut = (13.333 * curr.rate).toFixed(2);
-            document.getElementById('statFlagshipAvg').innerText = `${curr.symbol}${flagshipAvgIn} / ${curr.symbol}${flagshipAvgOut}`;
-
+            noResults.classList.toggle("hidden", data.length > 0);
             tableBody.innerHTML = data.map(model => {
-                const inFormatted = formatPrice(model.inputUSD, activeUnit, currencyKey);
-                const outFormatted = formatPrice(model.outputUSD, activeUnit, currencyKey);
-
-                // Calculate Batch Estimation for input values
-                const batchCostUSD = ((inputTokens / 1000000) * model.inputUSD) + ((outputTokens / 1000000) * model.outputUSD);
-                const batchCostFormatted = `${curr.symbol}${(batchCostUSD * curr.rate).toFixed(3)}`;
-
+                const modelUrl = `https://openrouter.ai/models/${escapeHtml(model.id)}`;
+                const description = model.description || model.id;
                 return `
                     <tr class="hover:bg-slate-900/60 transition-colors group">
-                        <td class="py-4 px-6 font-semibold text-white flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-sky-400 group-hover:bg-slate-700 transition-all">
-                                <i class="${model.icon}"></i>
-                            </div>
-                            <span>${model.name}</span>
+                        <td class="py-4 px-6 font-semibold text-white">
+                            <a class="hover:text-sky-400" href="${modelUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(model.name)}</a>
                         </td>
                         <td class="py-4 px-6">
-                            <span class="px-2.5 py-1 text-xs rounded-md border font-medium ${getProviderBadge(model.provider)}">
-                                ${model.provider}
-                            </span>
+                            <span class="px-2.5 py-1 text-xs rounded-md border font-medium ${getProviderBadge(model.provider)}">${escapeHtml(model.provider)}</span>
                         </td>
-                        <td class="py-4 px-6">
-                            <span class="px-2.5 py-1 text-xs rounded-md border font-medium ${model.tierBadge}">
-                                ${text[model.tierKey]}
-                            </span>
-                        </td>
-                        <td class="py-4 px-6 text-right font-mono text-slate-200">
-                            ${inFormatted}
-                        </td>
-                        <td class="py-4 px-6 text-right font-mono text-slate-200">
-                            ${outFormatted}
-                        </td>
-                        <td class="py-4 px-6 text-right font-mono text-sky-400 font-semibold">
-                            ${batchCostFormatted}
-                        </td>
-                        <td class="py-4 px-6 text-xs text-slate-400 max-w-xs leading-normal">
-                            ${model.notes[currentLang]}
-                        </td>
+                        <td class="py-4 px-6 text-xs font-mono text-slate-400">${escapeHtml(model.id)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.inputUSD, activeUnit, currencyKey)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.outputUSD, activeUnit, currencyKey)}</td>
+                        <td class="py-4 px-6 text-xs text-slate-400 max-w-xl leading-normal">${escapeHtml(description)}</td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // Filter Logic
         function filterModels() {
-            const query = document.getElementById("searchInput").value.toLowerCase();
-            const filtered = models.filter(m => {
-                const notesText = m.notes[currentLang] || "";
-                const matchesSearch = m.name.toLowerCase().includes(query) || 
-                                     m.provider.toLowerCase().includes(query) || 
-                                     notesText.toLowerCase().includes(query);
-                const matchesProvider = selectedProvider === "All" || m.provider.toLowerCase() === selectedProvider.toLowerCase();
-                return matchesSearch && matchesProvider;
+            const query = document.getElementById("searchInput").value.trim().toLowerCase();
+            selectedProvider = document.getElementById("providerSelect").value;
+            const filtered = models.filter(model => {
+                const matchesQuery = `${model.name} ${model.id} ${model.provider} ${model.description}`.toLowerCase().includes(query);
+                return matchesQuery && (selectedProvider === "All" || model.provider === selectedProvider);
             });
             renderTable(filtered);
         }
 
-        // Provider Filter Button Handler
-        function filterProvider(provider) {
-            selectedProvider = provider;
-            const buttons = document.querySelectorAll('.provider-btn');
-            buttons.forEach(btn => {
-                if (btn.innerText.includes(provider) || (provider === 'All' && btn.innerText.includes(i18n[currentLang].btnAllProviders))) {
-                    btn.className = "provider-btn active text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-all";
-                } else {
-                    btn.className = "provider-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 transition-all";
-                }
-            });
-            filterModels();
+        async function loadModels() {
+            const status = document.getElementById("apiStatus");
+            status.innerText = currentLang === 'zh' ? "正在載入 OpenRouter 模型資料…" : "Loading OpenRouter models…";
+
+            try {
+                const response = await fetch("https://openrouter.ai/api/v1/models");
+                if (!response.ok) throw new Error(`OpenRouter API returned ${response.status}`);
+                const payload = await response.json();
+                if (!Array.isArray(payload.data)) throw new Error("OpenRouter API response has no model list");
+
+                models = payload.data.map(item => {
+                    const inputPriceValue = item.pricing?.prompt;
+                    const outputPriceValue = item.pricing?.completion;
+                    const inputPrice = typeof inputPriceValue === "string" || typeof inputPriceValue === "number"
+                        ? Number(inputPriceValue) : NaN;
+                    const outputPrice = typeof outputPriceValue === "string" || typeof outputPriceValue === "number"
+                        ? Number(outputPriceValue) : NaN;
+                    const name = typeof item.name === "string" ? item.name : "";
+                    const id = typeof item.id === "string" ? item.id : "";
+                    const provider = name.includes(":") ? name.split(":")[0].trim() : id.split("/")[0];
+                    return {
+                        id,
+                        name,
+                        provider,
+                        description: typeof item.description === "string" ? item.description : "",
+                        inputUSD: inputPrice * 1000000,
+                        outputUSD: outputPrice * 1000000
+                    };
+                }).filter(model =>
+                    model.id && model.name && model.provider &&
+                    Number.isFinite(model.inputUSD) && model.inputUSD >= 0 &&
+                    Number.isFinite(model.outputUSD) && model.outputUSD >= 0
+                );
+
+                if (models.length === 0) throw new Error("OpenRouter API returned no models with valid prices");
+                models.sort((a, b) => a.name.localeCompare(b.name));
+
+                const providers = [...new Set(models.map(model => model.provider))].sort((a, b) => a.localeCompare(b));
+                const providerSelect = document.getElementById("providerSelect");
+                providerSelect.replaceChildren(new Option(i18n[currentLang].btnAllProviders, "All"));
+                providers.forEach(provider => providerSelect.add(new Option(provider, provider)));
+                document.getElementById("statSubTotalModels").innerText =
+                    currentLang === 'zh' ? `${providers.length} 個供應商` : `${providers.length} providers`;
+                status.innerText = currentLang === 'zh'
+                    ? `資料來源：OpenRouter · 已載入 ${models.length} 款模型 · ${new Date().toLocaleString()}`
+                    : `Source: OpenRouter · ${models.length} models loaded · ${new Date().toLocaleString()}`;
+                updateStats();
+                filterModels();
+            } catch (error) {
+                models = [];
+                document.getElementById("modelTableBody").innerHTML = "";
+                document.getElementById("noResults").classList.remove("hidden");
+                status.innerText = currentLang === 'zh'
+                    ? `無法載入 OpenRouter 資料：${error.message}`
+                    : `Could not load OpenRouter data: ${error.message}`;
+            }
         }
 
         // Unit Toggle (1M vs 1K)
@@ -666,12 +625,15 @@
 
         // Global Display Refresh
         function updateDisplay() {
-            renderTable();
+            updateStats();
+            filterModels();
         }
 
         // Initial Load setup
         window.onload = function() {
+            models = [];
             setLanguage('zh');
+            loadModels();
         };
     </script>
 </body>
