@@ -256,8 +256,8 @@
                                 <button type="button" class="column-resize-handle" data-resize-boundary="0" aria-label="調整模型名稱欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
                             <th class="relative py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
-                                <span id="thModelLevel">Model Level</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
-                                <button type="button" class="column-resize-handle" data-resize-boundary="1" aria-label="調整 Model Level 欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                                <span id="thModelLevel">模型級數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="1" aria-label="調整模型級數欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
                             <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('input')">
                                 <span id="thInputPrice">輸入單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
@@ -276,7 +276,7 @@
                 </table>
             </div>
             <p id="modelLevelNote" class="border-t border-slate-800 px-4 py-3 text-xs text-slate-500 sm:px-6">
-                Model Level 由高至低：旗艦級（最強定位）、高階、中階、輕量級（偏速度／成本）、一般級（資料不足）。分類按模型系列定位或名稱推定，並非效能測試排名。
+                模型級數由高至低：旗艦級（最強定位）、高階、中階、輕量級（偏速度／成本）、一般級（資料不足）。分類按模型系列定位或名稱推定，並非效能測試排名。
             </p>
 
             <!-- Empty State -->
@@ -314,15 +314,15 @@
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
-                columnResizeLabels: ["調整模型名稱欄闊度", "調整 Model Level 欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度"],
+                columnResizeLabels: ["調整模型名稱欄闊度", "調整模型級數欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度"],
                 thModelName: "模型名稱",
-                thModelLevel: "Model Level",
+                thModelLevel: "模型級數",
                 thInputPrice: "輸入單價",
                 thOutputPrice: "輸出單價",
                 thDetails: "模型說明",
                 noResultsTitle: "未找到符合條件的 AI 模型",
                 noResultsDesc: "請嘗試其他搜尋字詞或供應商。",
-                modelLevelNote: "Model Level 由高至低：旗艦級（最強定位）、高階、中階、輕量級（偏速度／成本）、一般級（資料不足）。分類按模型系列定位或名稱推定，並非效能測試排名。",
+                modelLevelNote: "模型級數由高至低：旗艦級（最強定位）、高階、中階、輕量級（偏速度／成本）、一般級（資料不足）。分類按模型系列定位或名稱推定，並非效能測試排名。",
                 footerCopy: "價格由 OpenRouter 公開 API 提供，並不代表模型供應商直接報價。",
                 footerStatus2: "OpenRouter 即時資料",
                 unit1M: "每 1M Tokens",
