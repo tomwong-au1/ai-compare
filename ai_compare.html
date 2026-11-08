@@ -158,47 +158,6 @@
             </div>
         </section>
 
-        <!-- Interactive Cost Calculator Section -->
-        <section class="glass-card rounded-2xl p-6 border border-slate-800">
-            <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-calculator text-sky-400 text-lg"></i>
-                    <h2 class="text-lg font-bold text-white" id="calcHeaderTitle">費用估算器</h2>
-                </div>
-                <span class="text-xs text-slate-400" id="calcHeaderSubtitle">根據您的預估使用量計算各模型總費用</span>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-2" id="lblInputTokens">輸入 Token 數量 (Prompt)</label>
-                    <div class="relative">
-                        <input type="number" id="calcInputTokens" value="1000000" step="100000" oninput="calculateEstimates()"
-                            class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500 transition-all pl-9">
-                        <i class="fa-solid fa-arrow-right-to-bracket absolute left-3 top-3.5 text-slate-500 text-xs"></i>
-                    </div>
-                    <span class="text-[10px] text-slate-500 mt-1 block" id="hintInputTokens">例如：1,000,000 tokens ≈ 約 750,000 個英文字詞</span>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-2" id="lblOutputTokens">輸出 Token 數量 (Completion)</label>
-                    <div class="relative">
-                        <input type="number" id="calcOutputTokens" value="500000" step="50000" oninput="calculateEstimates()"
-                            class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500 transition-all pl-9">
-                        <i class="fa-solid fa-arrow-right-from-bracket absolute left-3 top-3.5 text-slate-500 text-xs"></i>
-                    </div>
-                    <span class="text-[10px] text-slate-500 mt-1 block" id="hintOutputTokens">例如：500,000 tokens 預計生成長度</span>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-2" id="lblBestModel">最具成本效益方案</label>
-                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
-                        <span class="text-xs text-slate-400" id="lblLowestEstimated">估算最低費用：</span>
-                        <span id="bestCostModel" class="text-sm font-bold text-emerald-400">--</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Search, Filter & Table Container -->
         <section class="glass-card rounded-2xl overflow-hidden border border-slate-800">
             <!-- Toolbar -->
@@ -315,14 +274,6 @@
                 statTotalModels: "已收錄 AI 模型",
                 statSubTotalModels: "4 家主流 AI 供應商",
                 modelsCount: "8 款模型",
-                calcHeaderTitle: "費用估算器",
-                calcHeaderSubtitle: "根據您的預估使用量計算各模型總費用",
-                lblInputTokens: "輸入 Token 數量 (Prompt)",
-                hintInputTokens: "例如：1,000,000 tokens ≈ 約 750,000 個英文字詞",
-                lblOutputTokens: "輸出 Token 數量 (Completion)",
-                hintOutputTokens: "例如：500,000 tokens 預計生成長度",
-                lblBestModel: "最具成本效益方案",
-                lblLowestEstimated: "估算最低費用：",
                 searchPlaceholder: "搜尋模型名稱、分級或特點...",
                 btnAllProviders: "全部廠商",
                 thModelName: "模型名稱",
@@ -360,14 +311,6 @@
                 statTotalModels: "Tracked AI Models",
                 statSubTotalModels: "4 Premier AI Providers",
                 modelsCount: "8 Models",
-                calcHeaderTitle: "Cost Estimator",
-                calcHeaderSubtitle: "Estimate your expense based on volume",
-                lblInputTokens: "Input (Prompt) Tokens",
-                hintInputTokens: "e.g., 1,000,000 tokens ≈ ~750,000 words",
-                lblOutputTokens: "Output (Completion) Tokens",
-                hintOutputTokens: "e.g., 500,000 tokens generated output",
-                lblBestModel: "Best Value Option",
-                lblLowestEstimated: "Lowest Estimated Cost:",
                 searchPlaceholder: "Search model name, tier or specs...",
                 btnAllProviders: "All Providers",
                 thModelName: "Model Name",
@@ -534,15 +477,6 @@
             document.getElementById('statSubTotalModels').innerText = text.statSubTotalModels;
             document.getElementById('statTotalModelsValue').innerText = text.modelsCount;
 
-            document.getElementById('calcHeaderTitle').innerText = text.calcHeaderTitle;
-            document.getElementById('calcHeaderSubtitle').innerText = text.calcHeaderSubtitle;
-            document.getElementById('lblInputTokens').innerText = text.lblInputTokens;
-            document.getElementById('hintInputTokens').innerText = text.hintInputTokens;
-            document.getElementById('lblOutputTokens').innerText = text.lblOutputTokens;
-            document.getElementById('hintOutputTokens').innerText = text.hintOutputTokens;
-            document.getElementById('lblBestModel').innerText = text.lblBestModel;
-            document.getElementById('lblLowestEstimated').innerText = text.lblLowestEstimated;
-
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
             document.getElementById('btnFilterAll').innerText = text.btnAllProviders;
 
@@ -614,8 +548,8 @@
                 noResults.classList.add("hidden");
             }
 
-            const inputTokens = parseFloat(document.getElementById("calcInputTokens").value) || 0;
-            const outputTokens = parseFloat(document.getElementById("calcOutputTokens").value) || 0;
+            const inputTokens = 1000000;
+            const outputTokens = 500000;
 
             // Update stats cards dynamically based on selected currency
             const curr = exchangeRates[currencyKey];
@@ -682,7 +616,6 @@
                 return matchesSearch && matchesProvider;
             });
             renderTable(filtered);
-            calculateEstimates();
         }
 
         // Provider Filter Button Handler
@@ -731,33 +664,9 @@
             filterModels();
         }
 
-        // Calculate Best Estimate
-        function calculateEstimates() {
-            const inputTokens = parseFloat(document.getElementById("calcInputTokens").value) || 0;
-            const outputTokens = parseFloat(document.getElementById("calcOutputTokens").value) || 0;
-            const currencyKey = document.getElementById("currencySelect").value;
-            const curr = exchangeRates[currencyKey] || exchangeRates.AUD;
-
-            let bestCost = Infinity;
-            let bestModelName = "";
-
-            models.forEach(m => {
-                const totalCostUSD = ((inputTokens / 1000000) * m.inputUSD) + ((outputTokens / 1000000) * m.outputUSD);
-                if (totalCostUSD < bestCost) {
-                    bestCost = totalCostUSD;
-                    bestModelName = m.name;
-                }
-            });
-
-            const bestCostDisplay = `${curr.symbol}${(bestCost * curr.rate).toFixed(3)}`;
-            document.getElementById("bestCostModel").innerText = `${bestCostDisplay} (${bestModelName})`;
-            renderTable();
-        }
-
         // Global Display Refresh
         function updateDisplay() {
             renderTable();
-            calculateEstimates();
         }
 
         // Initial Load setup
