@@ -116,7 +116,7 @@
             <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestIn">最低輸入單價</p>
-                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestInput">A$0.15</h3>
+                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestInput">—</h3>
                     <p class="text-xs text-slate-400 mt-1" id="statCheapestInputModel">—</p>
                 </div>
                 <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
@@ -127,7 +127,7 @@
             <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleCheapestOut">最低輸出單價</p>
-                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestOutput">A$0.76</h3>
+                    <h3 class="text-2xl font-extrabold text-emerald-400 mt-1" id="statCheapestOutput">—</h3>
                     <p class="text-xs text-slate-400 mt-1" id="statCheapestOutputModel">—</p>
                 </div>
                 <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
@@ -138,7 +138,7 @@
             <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleFlagshipAvg">平均價格 (每 1M)</p>
-                    <h3 class="text-2xl font-extrabold text-sky-400 mt-1" id="statFlagshipAvg">A$4.05 / A$20.27</h3>
+                    <h3 class="text-2xl font-extrabold text-sky-400 mt-1" id="statFlagshipAvg">—</h3>
                     <p class="text-xs text-slate-400 mt-1" id="statSubFlagshipAvg">輸入 / 輸出</p>
                 </div>
                 <div class="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
@@ -149,7 +149,7 @@
             <div class="glass-card rounded-2xl p-5 glow-effect flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" id="statTitleTotalModels">已收錄 AI 模型</p>
-                    <h3 class="text-2xl font-extrabold text-purple-400 mt-1" id="statTotalModelsValue">8 款模型</h3>
+                    <h3 class="text-2xl font-extrabold text-purple-400 mt-1" id="statTotalModelsValue">載入中…</h3>
                     <p class="text-xs text-slate-400 mt-1" id="statSubTotalModels">OpenRouter</p>
                 </div>
                 <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400">
@@ -165,12 +165,15 @@
                 <!-- Search Box -->
                 <div class="relative flex-1 max-w-md">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
-                    <input type="text" id="searchInput" oninput="filterModels()" placeholder="搜尋模型名稱、分級或特點..."
+                    <input type="text" id="searchInput" oninput="filterModels()" placeholder="搜尋模型名稱、ID 或說明..."
                         class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all">
                 </div>
 
-                <!-- Provider Filter Tabs -->
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-3">
+                    <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                        <input id="featuredOnly" type="checkbox" checked onchange="filterModels()" class="accent-sky-500">
+                        <span id="featuredOnlyLabel">只顯示指定模型</span>
+                    </label>
                     <label class="sr-only" for="providerSelect" id="providerFilterLabel">供應商篩選</label>
                     <select id="providerSelect" onchange="filterModels()" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
                         <option value="All">全部供應商</option>
@@ -239,9 +242,9 @@
                 statSubFlagshipAvg: "輸入 / 輸出",
                 statTotalModels: "已收錄 AI 模型",
                 statSubTotalModels: "OpenRouter",
-                modelsCount: "載入中…",
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
+                featuredOnlyLabel: "只顯示指定模型",
                 thModelName: "模型名稱",
                 thProvider: "供應商",
                 thModelId: "模型 ID",
@@ -265,9 +268,9 @@
                 statSubFlagshipAvg: "Input / Output",
                 statTotalModels: "Tracked AI Models",
                 statSubTotalModels: "OpenRouter",
-                modelsCount: "Loading…",
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
+                featuredOnlyLabel: "Show selected models only",
                 thModelName: "Model Name",
                 thProvider: "Provider",
                 thModelId: "Model ID",
@@ -285,6 +288,17 @@
 
         // Current Language Choice (Default Traditional Chinese 'zh')
         let currentLang = 'zh';
+
+        const DEFAULT_MODEL_IDS = new Set([
+            "openai/gpt-6.1-sol",
+            "openai/gpt-6-luna",
+            "openai/gpt-6.1-terra",
+            "anthropic/claude-opus-5.5",
+            "anthropic/claude-sonnet-5.5",
+            "anthropic/claude-haiku-5.5",
+            "deepseek/deepseek-v4.1-flash",
+            "moonshotai/kimi-k3.1-pro"
+        ]);
 
         // Model Pricing Database (Base USD)
         let models = [
@@ -422,6 +436,7 @@
 
             document.getElementById('searchInput').placeholder = text.searchPlaceholder;
             document.getElementById('providerSelect').options[0].text = text.btnAllProviders;
+            document.getElementById('featuredOnlyLabel').innerText = text.featuredOnlyLabel;
 
             document.getElementById('thModelName').innerText = text.thModelName;
             document.getElementById('thProvider').innerText = text.thProvider;
@@ -449,6 +464,7 @@
                 case 'Anthropic': return 'bg-amber-950/60 text-amber-400 border-amber-800/50';
                 case 'DeepSeek': return 'bg-blue-950/60 text-blue-400 border-blue-800/50';
                 case 'Moonshot': return 'bg-indigo-950/60 text-indigo-400 border-indigo-800/50';
+                case 'MoonshotAI': return 'bg-indigo-950/60 text-indigo-400 border-indigo-800/50';
                 case 'Google': return 'bg-red-950/60 text-red-400 border-red-800/50';
                 default: return 'bg-slate-800 text-slate-300';
             }
@@ -526,7 +542,10 @@
         function filterModels() {
             const query = document.getElementById("searchInput").value.trim().toLowerCase();
             selectedProvider = document.getElementById("providerSelect").value;
-            const filtered = models.filter(model => {
+            const sourceModels = document.getElementById("featuredOnly").checked
+                ? models.filter(model => DEFAULT_MODEL_IDS.has(model.id))
+                : models;
+            const filtered = sourceModels.filter(model => {
                 const matchesQuery = `${model.name} ${model.id} ${model.provider} ${model.description}`.toLowerCase().includes(query);
                 return matchesQuery && (selectedProvider === "All" || model.provider === selectedProvider);
             });
@@ -576,9 +595,10 @@
                 providers.forEach(provider => providerSelect.add(new Option(provider, provider)));
                 document.getElementById("statSubTotalModels").innerText =
                     currentLang === 'zh' ? `${providers.length} 個供應商` : `${providers.length} providers`;
+                const featuredCount = models.filter(model => DEFAULT_MODEL_IDS.has(model.id)).length;
                 status.innerText = currentLang === 'zh'
-                    ? `資料來源：OpenRouter · 已載入 ${models.length} 款模型 · ${new Date().toLocaleString()}`
-                    : `Source: OpenRouter · ${models.length} models loaded · ${new Date().toLocaleString()}`;
+                    ? `資料來源：OpenRouter · 預設指定模型 ${featuredCount}/${DEFAULT_MODEL_IDS.size} 款 · 完整目錄 ${models.length} 款 · ${new Date().toLocaleString()}`
+                    : `Source: OpenRouter · ${featuredCount}/${DEFAULT_MODEL_IDS.size} selected models · ${models.length} total · ${new Date().toLocaleString()}`;
                 updateStats();
                 filterModels();
             } catch (error) {
