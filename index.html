@@ -241,13 +241,16 @@
 
             <!-- Pricing Table -->
             <div class="overflow-x-auto">
-                <table id="modelTable" class="w-full min-w-[980px] table-fixed text-left border-collapse">
+                <table id="modelTable" class="w-full min-w-[1400px] table-fixed text-left border-collapse">
                     <colgroup>
-                        <col style="width: 22%">
-                        <col style="width: 12%">
-                        <col style="width: 12%">
-                        <col style="width: 12%">
-                        <col style="width: 42%">
+                        <col style="width: 20%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 20%">
                     </colgroup>
                     <thead>
                         <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
@@ -263,9 +266,21 @@
                                 <span id="thOutputPrice">輸出單價</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
                                 <button type="button" class="column-resize-handle" data-resize-boundary="2" aria-label="調整輸出單價欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
+                            <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('intelligenceIndex')">
+                                <span id="thIntelligenceIndex">智能指數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="3" aria-label="調整 Intelligence Index 欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                            </th>
+                            <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('codingIndex')">
+                                <span id="thCodingIndex">編碼指數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="4" aria-label="調整 Coding Index 欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                            </th>
+                            <th class="relative py-4 px-6 text-right cursor-pointer hover:text-white transition-colors" onclick="sortTable('agenticIndex')">
+                                <span id="thAgenticIndex">代理指數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="5" aria-label="調整 Agentic Index 欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                            </th>
                             <th class="relative py-4 px-6 cursor-pointer hover:text-white transition-colors" onclick="sortTable('level')">
                                 <span id="thModelLevel">模型級數</span> <i class="fa-solid fa-sort text-slate-600 ml-1"></i>
-                                <button type="button" class="column-resize-handle" data-resize-boundary="3" aria-label="調整模型級數欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
+                                <button type="button" class="column-resize-handle" data-resize-boundary="6" aria-label="調整模型級數欄闊度" title="拖曳以調整欄闊度"><span aria-hidden="true"></span></button>
                             </th>
                             <th class="py-4 px-6" id="thDetails">說明</th>
                         </tr>
@@ -314,11 +329,14 @@
                 searchPlaceholder: "搜尋模型名稱、ID 或說明...",
                 btnAllProviders: "全部供應商",
                 featuredOnlyLabel: "只顯示指定模型",
-                columnResizeLabels: ["調整模型名稱欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度", "調整模型級數欄闊度"],
+                columnResizeLabels: ["調整模型名稱欄闊度", "調整輸入單價欄闊度", "調整輸出單價欄闊度", "調整 Intelligence Index 欄闊度", "調整 Coding Index 欄闊度", "調整 Agentic Index 欄闊度", "調整模型級數欄闊度"],
                 thModelName: "模型名稱",
                 thModelLevel: "模型級數",
                 thInputPrice: "輸入單價",
                 thOutputPrice: "輸出單價",
+                thIntelligenceIndex: "智能指數",
+                thCodingIndex: "編碼指數",
+                thAgenticIndex: "代理指數",
                 thDetails: "模型說明",
                 noResultsTitle: "未找到符合條件的 AI 模型",
                 noResultsDesc: "請嘗試其他搜尋字詞或供應商。",
@@ -337,11 +355,14 @@
                 searchPlaceholder: "Search model name, ID, or description...",
                 btnAllProviders: "All providers",
                 featuredOnlyLabel: "Show selected models only",
-                columnResizeLabels: ["Resize Model Name column", "Resize Input Price column", "Resize Output Price column", "Resize Model Level column"],
+                columnResizeLabels: ["Resize Model Name column", "Resize Input Price column", "Resize Output Price column", "Resize Intelligence Index column", "Resize Coding Index column", "Resize Agentic Index column", "Resize Model Level column"],
                 thModelName: "Model Name",
                 thModelLevel: "Model Level",
                 thInputPrice: "Input Price",
                 thOutputPrice: "Output Price",
+                thIntelligenceIndex: "Intelligence Index",
+                thCodingIndex: "Coding Index",
+                thAgenticIndex: "Agentic Index",
                 thDetails: "Description",
                 noResultsTitle: "No AI models matched your search",
                 noResultsDesc: "Try a different search term or provider.",
@@ -359,6 +380,7 @@
         let DEFAULT_MODEL_IDS = new Set();
         let MODEL_LEVEL_BY_ID = {};
         let MODEL_DESCRIPTIONS_ZH = {};
+        let MODEL_INDEXES_BY_ID = {};
         let EXCLUDED_MODEL_ID_PREFIXES = [];
 
         const MODEL_LEVELS = {
@@ -498,8 +520,8 @@
         // State Variables
         let activeUnit = "1M"; // '1M' or '1K'
         let selectedProvider = "All";
-        let sortDirection = { name: 'asc', level: 'asc', input: 'asc', output: 'asc' };
-        let columnWidths = [22, 12, 12, 12, 42];
+        let sortDirection = { name: 'asc', level: 'asc', input: 'asc', output: 'asc', intelligenceIndex: 'asc', codingIndex: 'asc', agenticIndex: 'asc' };
+        let columnWidths = [20, 10, 10, 10, 10, 10, 10, 20];
         let activeColumnResize = null;
 
         // Language Switcher Function
@@ -525,6 +547,9 @@
             document.getElementById('thModelLevel').innerText = text.thModelLevel;
             document.getElementById('thInputPrice').innerText = text.thInputPrice;
             document.getElementById('thOutputPrice').innerText = text.thOutputPrice;
+            document.getElementById('thIntelligenceIndex').innerText = text.thIntelligenceIndex;
+            document.getElementById('thCodingIndex').innerText = text.thCodingIndex;
+            document.getElementById('thAgenticIndex').innerText = text.thAgenticIndex;
             document.getElementById('thDetails').innerText = text.thDetails;
             document.getElementById('modelLevelNote').innerText = text.modelLevelNote;
 
@@ -541,7 +566,7 @@
         }
 
         function applyColumnResize(boundary, deltaPercent) {
-            const minimumWidths = [14, 9, 10, 10, 20];
+            const minimumWidths = [14, 7, 7, 7, 7, 7, 7, 12];
             const adjacentWidth = columnWidths[boundary] + columnWidths[boundary + 1];
             const nextLeftWidth = Math.min(
                 adjacentWidth - minimumWidths[boundary + 1],
@@ -647,6 +672,10 @@
             return `${currency.symbol}${formatted}`;
         }
 
+        function formatIndex(value) {
+            return Number.isFinite(value) ? value.toFixed(1) : "—";
+        }
+
         function renderTable(data = models) {
             const tableBody = document.getElementById("modelTableBody");
             const noResults = document.getElementById("noResults");
@@ -666,6 +695,9 @@
                         </td>
                         <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.inputUSD, activeUnit, currencyKey)}</td>
                         <td class="py-4 px-6 text-right font-mono text-slate-200">${formatPrice(model.outputUSD, activeUnit, currencyKey)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatIndex(model.intelligenceIndex)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatIndex(model.codingIndex)}</td>
+                        <td class="py-4 px-6 text-right font-mono text-slate-200">${formatIndex(model.agenticIndex)}</td>
                         <td class="py-4 px-6">
                             <span class="model-level-badge inline-flex whitespace-nowrap rounded-md border px-2.5 py-1 text-xs font-medium ${level.badge}">${currentLang === 'zh' ? level.zh : level.en}</span>
                         </td>
@@ -701,7 +733,9 @@
                 const config = await configResponse.json();
                 if (!config || typeof config !== "object" || Array.isArray(config) ||
                     !Array.isArray(config.featuredModels) ||
-                    !Array.isArray(config.excludedModelIdPrefixes)) {
+                    !Array.isArray(config.excludedModelIdPrefixes) ||
+                    !config.modelIndices || typeof config.modelIndices !== "object" ||
+                    Array.isArray(config.modelIndices)) {
                     throw new Error("models.json has an invalid configuration");
                 }
 
@@ -714,6 +748,16 @@
                     !config.excludedModelIdPrefixes.every(prefix => typeof prefix === "string" && prefix.trim() !== "")) {
                     throw new Error("models.json contains an invalid model entry");
                 }
+                const validIndexNames = ["intelligence", "coding", "agentic"];
+                const isValidIndexRecord = record =>
+                    record && typeof record === "object" && !Array.isArray(record) &&
+                    Object.entries(record).every(([name, value]) =>
+                        validIndexNames.includes(name) &&
+                        (value === null || (typeof value === "number" && Number.isFinite(value) && value >= 0))
+                    );
+                if (Object.entries(config.modelIndices).some(([id, record]) => !id.trim() || !isValidIndexRecord(record))) {
+                    throw new Error("models.json contains an invalid model index");
+                }
 
                 DEFAULT_MODEL_IDS = new Set(config.featuredModels.map(model => model.id.trim()));
                 MODEL_LEVEL_BY_ID = Object.fromEntries(config.featuredModels
@@ -722,6 +766,14 @@
                 MODEL_DESCRIPTIONS_ZH = Object.fromEntries(config.featuredModels
                     .filter(model => model.descriptionZh !== undefined)
                     .map(model => [model.id.trim(), model.descriptionZh]));
+                MODEL_INDEXES_BY_ID = Object.fromEntries(Object.entries(config.modelIndices).map(([id, indexes]) => [
+                    id.trim(),
+                    {
+                        intelligenceIndex: indexes.intelligence ?? null,
+                        codingIndex: indexes.coding ?? null,
+                        agenticIndex: indexes.agentic ?? null
+                    }
+                ]));
                 EXCLUDED_MODEL_ID_PREFIXES = config.excludedModelIdPrefixes.map(prefix => prefix.trim());
 
                 if (!response.ok) throw new Error(`OpenRouter API returned ${response.status}`);
@@ -740,6 +792,7 @@
                             ? Number(outputPriceValue) : NaN;
                         const name = typeof item.name === "string" ? item.name : "";
                         const id = typeof item.id === "string" ? item.id : "";
+                        const indexes = MODEL_INDEXES_BY_ID[id] || {};
                         const provider = name.includes(":") ? name.split(":")[0].trim() : id.split("/")[0];
                         return {
                             id,
@@ -748,6 +801,9 @@
                             modelLevel: getModelLevel(id, name),
                             description: typeof item.description === "string" ? item.description : "",
                             descriptionZh: MODEL_DESCRIPTIONS_ZH[id] || "",
+                            intelligenceIndex: indexes.intelligenceIndex ?? null,
+                            codingIndex: indexes.codingIndex ?? null,
+                            agenticIndex: indexes.agenticIndex ?? null,
                             inputUSD: inputPrice * 1000000,
                             outputUSD: outputPrice * 1000000
                         };
@@ -798,15 +854,32 @@
         // Column Sort
         function sortTable(key) {
             let dir = sortDirection[key] === 'asc' ? 'desc' : 'asc';
+            const sortValues = {
+                name: model => model.name,
+                level: model => (MODEL_LEVELS[model.modelLevel] || MODEL_LEVELS.general).rank,
+                input: model => model.inputUSD,
+                output: model => model.outputUSD,
+                intelligenceIndex: model => model.intelligenceIndex,
+                codingIndex: model => model.codingIndex,
+                agenticIndex: model => model.agenticIndex
+            };
+            const getValue = sortValues[key];
+            if (!getValue) return;
             sortDirection[key] = dir;
 
             models.sort((a, b) => {
-                let valA = key === 'input' ? a.inputUSD : key === 'output' ? a.outputUSD : key === 'level' ? (MODEL_LEVELS[a.modelLevel] || MODEL_LEVELS.general).rank : a.name;
-                let valB = key === 'input' ? b.inputUSD : key === 'output' ? b.outputUSD : key === 'level' ? (MODEL_LEVELS[b.modelLevel] || MODEL_LEVELS.general).rank : b.name;
+                const valA = getValue(a);
+                const valB = getValue(b);
+                const missingA = valA === null || valA === undefined || (typeof valA === "number" && !Number.isFinite(valA));
+                const missingB = valB === null || valB === undefined || (typeof valB === "number" && !Number.isFinite(valB));
+                if (missingA || missingB) {
+                    if (missingA && missingB) return a.name.localeCompare(b.name);
+                    return missingA ? 1 : -1;
+                }
 
-                if (valA < valB) return dir === 'asc' ? -1 : 1;
-                if (valA > valB) return dir === 'asc' ? 1 : -1;
-                return 0;
+                const comparison = typeof valA === "string" ? valA.localeCompare(valB) : valA - valB;
+                if (comparison === 0) return a.name.localeCompare(b.name);
+                return dir === 'asc' ? comparison : -comparison;
             });
             filterModels();
         }
