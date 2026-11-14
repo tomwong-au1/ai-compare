@@ -43,7 +43,7 @@
     {
       "id": "google/gemini-3.8-flash",
       "level": "lightweight"
-    },    
+    },
     {
       "id": "anthropic/claude-fable-5.2",
       "level": "flagship"
@@ -70,6 +70,9 @@
     },
     "anthropic/claude-haiku-5.5": {
       "intelligence": 36.5
+    },
+    "deepseek/deepseek-v4.1-flash": {
+      "intelligence": 32
     },
     "moonshotai/kimi-k3.1-pro": {
       "intelligence": 46.5
