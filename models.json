@@ -45,6 +45,10 @@
       "level": "lightweight"
     },
     {
+      "id": "google/gemini-4-carbon",
+      "level": "intermediate"
+    }    
+    {
       "id": "anthropic/claude-fable-5.2",
       "level": "flagship"
     }
@@ -87,6 +91,9 @@
       "intelligence": 30.8,
       "coding": 76.3,
       "agentic": 40.2
+    },
+    "google/gemini-4-carbon": {
+      "intelligence": 60.0
     },
     "anthropic/claude-fable-5.2": {
       "intelligence": 64.6
