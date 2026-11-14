@@ -51,6 +51,11 @@
       "descriptionZh": "Google Gemini 4 系列的高效率主力型號，面向高吞吐量代理工作流程、程式開發及多模型路由，著重較低成本與延遲。"
     },
     {
+      "id": "google/gemini-3.8-flash",
+      "level": "Lightweight",
+      "descriptionZh": "Gemini 3.8 Flash is Google's most intelligent Flash model with significant gains from 3.7 Flash across software engineering, agentic tasks, and multi-step reasoning"
+    },    
+    {
       "id": "anthropic/claude-fable-5.2",
       "level": "flagship",
       "descriptionZh": "Anthropic Claude Fable 5.2 高階型號，針對高難度技術工作；相較 Fable 5.1，在程式開發、推理及視覺能力方面有所提升。"
