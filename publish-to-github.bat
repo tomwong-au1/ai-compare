@@ -47,7 +47,7 @@ if not defined COMMIT_MESSAGE goto :cancelled
 choice /C YN /N /M "Stage all changes? [Y/N] "
 if errorlevel 2 goto :cancelled
 
-git add -A
+git -c gc.auto=0 -c maintenance.auto=false add -A
 if errorlevel 1 goto :failed
 
 echo.
@@ -58,13 +58,13 @@ echo.
 choice /C YN /N /M "Commit these changes and push to GitHub? [Y/N] "
 if errorlevel 2 goto :cancelled_staged
 
-git commit -m "%COMMIT_MESSAGE%"
+git -c gc.auto=0 -c maintenance.auto=false commit -m "%COMMIT_MESSAGE%"
 if errorlevel 1 goto :failed
 
 :push
 echo.
 echo Pushing %BRANCH% to origin...
-git push --set-upstream origin "%BRANCH%"
+git -c gc.auto=0 -c maintenance.auto=false push --set-upstream origin "%BRANCH%"
 if errorlevel 1 goto :failed
 
 echo.
