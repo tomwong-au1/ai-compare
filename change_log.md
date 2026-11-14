@@ -2,6 +2,12 @@
 
 記錄 AI Model API Pricing Directory 網站嘅建立、功能更新同介面調整。
 
+## 2026-11-14
+
+- 將 Google Gemini 4 Hydrogen 同 Anthropic Claude Fable 5.2 加入預設指定模型清單，價格由 OpenRouter API 即時載入。
+- 從 OpenRouter 型錄排除 Claude Fable 5.1，改用 5.2。
+- 新增 `models.json`，集中管理預設模型、級數、繁體中文說明及排除型號前綴；修改後推送至 GitHub 即可更新網站。
+
 ## 2026-11-09
 
 - 將行高選項更正為可用滑鼠拖曳調整相鄰欄位闊度，並支援鍵盤左右方向鍵調整。

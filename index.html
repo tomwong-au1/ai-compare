@@ -356,29 +356,10 @@
         // Current Language Choice (Default Traditional Chinese 'zh')
         let currentLang = 'zh';
 
-        const DEFAULT_MODEL_IDS = new Set([
-            "openai/gpt-6.1-sol",
-            "openai/gpt-6-luna",
-            "openai/gpt-6.1-terra",
-            "anthropic/claude-opus-5.5",
-            "anthropic/claude-sonnet-5.5",
-            "anthropic/claude-haiku-5.5",
-            "deepseek/deepseek-v4.1-flash",
-            "moonshotai/kimi-k3.1-pro",
-            "google/gemini-4-argon"
-        ]);
-
-        const MODEL_LEVEL_BY_ID = {
-            "openai/gpt-6.1-sol": "flagship",
-            "openai/gpt-6-luna": "lightweight",
-            "openai/gpt-6.1-terra": "intermediate",
-            "anthropic/claude-opus-5.5": "flagship",
-            "anthropic/claude-sonnet-5.5": "advanced",
-            "anthropic/claude-haiku-5.5": "lightweight",
-            "deepseek/deepseek-v4.1-flash": "intermediate",
-            "moonshotai/kimi-k3.1-pro": "flagship",
-            "google/gemini-4-argon": "flagship"
-        };
+        let DEFAULT_MODEL_IDS = new Set();
+        let MODEL_LEVEL_BY_ID = {};
+        let MODEL_DESCRIPTIONS_ZH = {};
+        let EXCLUDED_MODEL_ID_PREFIXES = [];
 
         const MODEL_LEVELS = {
             flagship: { rank: 0, zh: "旗艦級", en: "Flagship", badge: "model-level-flagship bg-purple-500/10 text-purple-400 border-purple-500/20" },
@@ -398,18 +379,6 @@
             if (/\b(?:standard|balanced|base)\b|(?:14|16|20|27|30)b\b/i.test(modelName)) return "intermediate";
             return "general";
         }
-
-        const MODEL_DESCRIPTIONS_ZH = {
-            "openai/gpt-6.1-sol": "GPT-6 系列的升級型號，定位低於旗艦 GPT-6 Astra。適合代理式程式開發、電腦操作，以及需要處理大量文件的專業工作。",
-            "openai/gpt-6-luna": "GPT-6 系列中快速而具成本效益的型號，定位低於 GPT-6 Sol。適合大量、高時效需求的聊天、分類及輕量代理任務。",
-            "openai/gpt-6.1-terra": "GPT-6.1 系列的中階型號，定價低於 GPT-6.1 Sol。適合日常代理任務、程式開發及寫作，並擅長理解螢幕截圖。",
-            "anthropic/claude-opus-5.5": "Anthropic 旗艦型號，面向高難度推理、程式開發及長流程代理任務。尤其適合大型程式碼庫中的多步驟修改。",
-            "anthropic/claude-sonnet-5.5": "Sonnet 系列的日常工作型號，適合範圍明確的任務；特別擅長開發功能、修正錯誤及產出完整內容。",
-            "anthropic/claude-haiku-5.5": "輕巧快速的型號，適合大量且注重成本的摘要、子代理及瀏覽器操作工作；程式開發與電腦操作能力亦有所提升。",
-            "deepseek/deepseek-v4.1-flash": "DeepSeek 的稀疏混合專家模型，採用因果編碼器—解碼器（CED）架構。輸入時啟用 80 億參數，生成輸出時啟用 160 億參數。",
-            "moonshotai/kimi-k3.1-pro": "Moonshot AI 旗艦開放權重多模態推理模型，是 Kimi K3 的後訓練升級版，支援 100 萬 tokens 上下文，適合長流程程式開發等任務。",
-            "google/gemini-4-argon": "Google 旗艦推理模型，適合複雜軟件工程、數學與科學問題，以及自主多步驟代理任務。"
-        };
 
         // Model Pricing Database (Base USD)
         let models = [
@@ -721,39 +690,72 @@
 
         async function loadModels() {
             const status = document.getElementById("apiStatus");
-            status.innerText = currentLang === 'zh' ? "正在載入 OpenRouter 模型資料…" : "Loading OpenRouter models…";
+            status.innerText = currentLang === 'zh' ? "正在載入模型清單及 OpenRouter 資料…" : "Loading model list and OpenRouter data…";
 
             try {
-                const response = await fetch("https://openrouter.ai/api/v1/models");
+                const [configResponse, response] = await Promise.all([
+                    fetch("./models.json"),
+                    fetch("https://openrouter.ai/api/v1/models")
+                ]);
+                if (!configResponse.ok) throw new Error(`models.json returned ${configResponse.status}`);
+                const config = await configResponse.json();
+                if (!config || typeof config !== "object" || Array.isArray(config) ||
+                    !Array.isArray(config.featuredModels) ||
+                    !Array.isArray(config.excludedModelIdPrefixes)) {
+                    throw new Error("models.json has an invalid configuration");
+                }
+
+                const isValidFeaturedModel = model =>
+                    model && typeof model === "object" && !Array.isArray(model) &&
+                    typeof model.id === "string" && model.id.trim() !== "" &&
+                    (model.level === undefined || Object.prototype.hasOwnProperty.call(MODEL_LEVELS, model.level)) &&
+                    (model.descriptionZh === undefined || typeof model.descriptionZh === "string");
+                if (!config.featuredModels.every(isValidFeaturedModel) ||
+                    !config.excludedModelIdPrefixes.every(prefix => typeof prefix === "string" && prefix.trim() !== "")) {
+                    throw new Error("models.json contains an invalid model entry");
+                }
+
+                DEFAULT_MODEL_IDS = new Set(config.featuredModels.map(model => model.id.trim()));
+                MODEL_LEVEL_BY_ID = Object.fromEntries(config.featuredModels
+                    .filter(model => model.level !== undefined)
+                    .map(model => [model.id.trim(), model.level]));
+                MODEL_DESCRIPTIONS_ZH = Object.fromEntries(config.featuredModels
+                    .filter(model => model.descriptionZh !== undefined)
+                    .map(model => [model.id.trim(), model.descriptionZh]));
+                EXCLUDED_MODEL_ID_PREFIXES = config.excludedModelIdPrefixes.map(prefix => prefix.trim());
+
                 if (!response.ok) throw new Error(`OpenRouter API returned ${response.status}`);
                 const payload = await response.json();
                 if (!Array.isArray(payload.data)) throw new Error("OpenRouter API response has no model list");
 
-                models = payload.data.map(item => {
-                    const inputPriceValue = item.pricing?.prompt;
-                    const outputPriceValue = item.pricing?.completion;
-                    const inputPrice = typeof inputPriceValue === "string" || typeof inputPriceValue === "number"
-                        ? Number(inputPriceValue) : NaN;
-                    const outputPrice = typeof outputPriceValue === "string" || typeof outputPriceValue === "number"
-                        ? Number(outputPriceValue) : NaN;
-                    const name = typeof item.name === "string" ? item.name : "";
-                    const id = typeof item.id === "string" ? item.id : "";
-                    const provider = name.includes(":") ? name.split(":")[0].trim() : id.split("/")[0];
-                    return {
-                        id,
-                        name,
-                        provider,
-                        modelLevel: getModelLevel(id, name),
-                        description: typeof item.description === "string" ? item.description : "",
-                        descriptionZh: MODEL_DESCRIPTIONS_ZH[id] || "",
-                        inputUSD: inputPrice * 1000000,
-                        outputUSD: outputPrice * 1000000
-                    };
-                }).filter(model =>
-                    model.id && model.name && model.provider &&
-                    Number.isFinite(model.inputUSD) && model.inputUSD >= 0 &&
-                    Number.isFinite(model.outputUSD) && model.outputUSD >= 0
-                );
+                models = payload.data
+                    .filter(item => typeof item.id !== "string" ||
+                        !EXCLUDED_MODEL_ID_PREFIXES.some(prefix => item.id.startsWith(prefix)))
+                    .map(item => {
+                        const inputPriceValue = item.pricing?.prompt;
+                        const outputPriceValue = item.pricing?.completion;
+                        const inputPrice = typeof inputPriceValue === "string" || typeof inputPriceValue === "number"
+                            ? Number(inputPriceValue) : NaN;
+                        const outputPrice = typeof outputPriceValue === "string" || typeof outputPriceValue === "number"
+                            ? Number(outputPriceValue) : NaN;
+                        const name = typeof item.name === "string" ? item.name : "";
+                        const id = typeof item.id === "string" ? item.id : "";
+                        const provider = name.includes(":") ? name.split(":")[0].trim() : id.split("/")[0];
+                        return {
+                            id,
+                            name,
+                            provider,
+                            modelLevel: getModelLevel(id, name),
+                            description: typeof item.description === "string" ? item.description : "",
+                            descriptionZh: MODEL_DESCRIPTIONS_ZH[id] || "",
+                            inputUSD: inputPrice * 1000000,
+                            outputUSD: outputPrice * 1000000
+                        };
+                    }).filter(model =>
+                        model.id && model.name && model.provider &&
+                        Number.isFinite(model.inputUSD) && model.inputUSD >= 0 &&
+                        Number.isFinite(model.outputUSD) && model.outputUSD >= 0
+                    );
 
                 if (models.length === 0) throw new Error("OpenRouter API returned no models with valid prices");
                 models.sort((a, b) => a.name.localeCompare(b.name));
@@ -764,7 +766,7 @@
                 providers.forEach(provider => providerSelect.add(new Option(provider, provider)));
                 const featuredCount = models.filter(model => DEFAULT_MODEL_IDS.has(model.id)).length;
                 status.innerText = currentLang === 'zh'
-                    ? `資料來源：OpenRouter · 預設指定模型 ${featuredCount}/${DEFAULT_MODEL_IDS.size} 款 · 完整目錄 ${models.length} 款 · ${new Date().toLocaleString()}`
+                    ? `資料來源：OpenRouter · 預設指定模型 ${featuredCount}/${DEFAULT_MODEL_IDS.size} 款 · 可用型錄 ${models.length} 款 · ${new Date().toLocaleString()}`
                     : `Source: OpenRouter · ${featuredCount}/${DEFAULT_MODEL_IDS.size} selected models · ${models.length} total · ${new Date().toLocaleString()}`;
                 filterModels();
             } catch (error) {
@@ -772,8 +774,8 @@
                 document.getElementById("modelTableBody").innerHTML = "";
                 document.getElementById("noResults").classList.remove("hidden");
                 status.innerText = currentLang === 'zh'
-                    ? `無法載入 OpenRouter 資料：${error.message}`
-                    : `Could not load OpenRouter data: ${error.message}`;
+                    ? `無法載入模型清單或 OpenRouter 資料：${error.message}`
+                    : `Could not load the model list or OpenRouter data: ${error.message}`;
             }
         }
 
