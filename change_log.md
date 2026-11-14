@@ -5,6 +5,7 @@
 ## 2026-11-14
 
 - 在模型表加入可排序嘅 Intelligence、Coding 同 Agentic Index 欄位；分數由 `models.json` 嘅 `modelIndices` 手動管理，暫無分數會留空顯示。補入 Artificial Analysis 可查到嘅 Intelligence Index；其他指數只保留已有來源嘅分數。
+- 預設背景改為白色；使用者切換背景後，會喺同一瀏覽器記住選擇。
 - 移除模型說明欄及說明搜尋，`models.json` 不再保存模型說明。
 - 將 Google Gemini 4 Hydrogen 同 Anthropic Claude Fable 5.2 加入預設指定模型清單，價格由 OpenRouter API 即時載入。
 - 從 OpenRouter 型錄排除 Claude Fable 5.1，改用 5.2。

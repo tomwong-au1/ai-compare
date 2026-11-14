@@ -157,7 +157,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen pb-12 antialiased selection:bg-sky-500 selection:text-white" data-theme="black">
+<body class="min-h-screen pb-12 antialiased selection:bg-sky-500 selection:text-white" data-theme="white">
 
     <!-- Top Header -->
     <header class="border-b border-slate-800/80 bg-slate-950/60 sticky top-0 z-50 backdrop-blur-md">
@@ -177,8 +177,8 @@
             <!-- Currency & Unit Selector Controls -->
             <div class="flex flex-wrap items-center gap-3">
                 <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-lg p-1" role="group" aria-label="背景顏色">
-                    <button id="themeWhite" onclick="setTheme('white')" aria-pressed="false" class="px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all">白色</button>
-                    <button id="themeBlack" onclick="setTheme('black')" aria-pressed="true" class="px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all">黑色</button>
+                    <button id="themeWhite" onclick="setTheme('white')" aria-pressed="true" class="px-3 py-1 text-xs font-semibold rounded bg-sky-500 text-white transition-all">白色</button>
+                    <button id="themeBlack" onclick="setTheme('black')" aria-pressed="false" class="px-3 py-1 text-xs font-semibold rounded text-slate-400 hover:text-slate-200 transition-all">黑色</button>
                 </div>
 
                 <!-- Language Selector -->
@@ -609,9 +609,28 @@
             });
         }
 
+        const THEME_STORAGE_KEY = 'aiCompareTheme';
+
+        function getSavedTheme() {
+            try {
+                const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+                return savedTheme === 'black' || savedTheme === 'white' ? savedTheme : 'white';
+            } catch (error) {
+                console.warn('Unable to read the saved theme preference.', error);
+                return 'white';
+            }
+        }
+
         function setTheme(theme) {
-            const isWhite = theme === 'white';
-            document.body.dataset.theme = isWhite ? 'white' : 'black';
+            const selectedTheme = theme === 'black' ? 'black' : 'white';
+            const isWhite = selectedTheme === 'white';
+            document.body.dataset.theme = selectedTheme;
+
+            try {
+                localStorage.setItem(THEME_STORAGE_KEY, selectedTheme);
+            } catch (error) {
+                console.warn('Unable to save the theme preference.', error);
+            }
 
             const whiteButton = document.getElementById('themeWhite');
             const blackButton = document.getElementById('themeBlack');
@@ -865,6 +884,8 @@
         function updateDisplay() {
             filterModels();
         }
+
+        setTheme(getSavedTheme());
 
         // Initial Load setup
         window.onload = function() {
